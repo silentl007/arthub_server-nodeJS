@@ -21,6 +21,7 @@ router.post('/register', async (req, res) => {
         const dataGallery = await mongoModel.gallery.findOne({ email: req.body.email });
         const dataFreelance = await mongoModel.freelancer.findOne({ email: req.body.email });
         const dataCustomer = await mongoModel.customer.findOne({ email: req.body.email });
+        // logic to find if email has been used to register in any of the categories
         if (dataGallery != null) {
             return res.status(400).json({ message: "This email is already used!" })
         } else if (dataFreelance != null) { return res.status(400).json({ message: "This email is already used!" }) }
@@ -62,6 +63,7 @@ router.post('/activate/:token', async (req, res) => {
                 return res.status(401).json({ message: 'Expired token!' });
             } else {
                 const decodedToken = jwt.decode(receivedToken);
+                // logic to determine which collection to store the registered user based on accoutnt type
                 if (decodedToken.account == "Gallery") {
                     const userEntry = new mongoModel.gallery({
                         userID: id_generator.v4(),
