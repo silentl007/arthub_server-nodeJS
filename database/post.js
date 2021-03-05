@@ -8,50 +8,50 @@ require('dotenv')
 const router = express.Router();
 const mongoModel = require('./model')
 
-// response codes
-/**
+/** response codes
  * 200 -successful - general successful
  * 400 -unsuccessful - register -- email already used
+ * 402 -unsuccessful - login -- email not found
+ * 401 -unsuccessful - login -- password does not match
  */
 
 // register route
 router.post('/register', async (req, res) => {
-    if (!req.body.account) {
-        const dataBody = req.body;
-        const dataGallery = await mongoModel.gallery.findOne({ email: req.body.email });
-        const dataFreelance = await mongoModel.freelancer.findOne({ email: req.body.email });
-        const dataCustomer = await mongoModel.customer.findOne({ email: req.body.email });
-        // logic to find if email has been used to register in any of the categories
-        if (dataGallery != null) {
-            return res.status(400).json({ message: "This email is already used!" })
-        } else if (dataFreelance != null) { return res.status(400).json({ message: "This email is already used!" }) }
-        else if (dataCustomer != null) { return res.status(400).json({ message: "This email is already used!" }) }
-        else {
-            const token = jwt.sign(dataBody, process.env.TokenSecret, { expiresIn: '5m' });
-            var emailURL = `localhost:3000/send/activate/${token}`
-            console.log(emailURL);
-            // const emailBody = {
-            //     from: process.env.SendEmailAddress,
-            //     to: dataBody.email,
-            //     subject: `Account activation link`,
-            //     html: `
-            //     <h1> Please use the link to activate your account</h1>
-            //     <h3> The link below will expire in five(5) minutes </h3>
-
-            //     <h3>This email may contain subsentive information</h3>
-            //     `};
-            // sendgrid.send(emailBody).then(() => {
-            //     return res.status(200).json({
-            //         message: `email has been sent to ${data.email}. Follow the instructions to activate your account`
-            //     })
-            // }).catch((err) => {
-            //     console.log(err);
-            //     return res.status(400).json({
-            //         message: err.message
-            //     })
-            // })
-        }
+    const dataBody = req.body;
+    const dataGallery = await mongoModel.gallery.findOne({ email: dataBody.email });
+    const dataFreelance = await mongoModel.freelancer.findOne({ email: dataBody.email });
+    const dataCustomer = await mongoModel.customer.findOne({ email: dataBody.email });
+    // logic to find if email has been used to register in any of the categories
+    if (dataGallery != null) {
+        return res.status(400).json({ message: "This email is already used!" })
+    } else if (dataFreelance != null) { return res.status(400).json({ message: "This email is already used!" }) }
+    else if (dataCustomer != null) { return res.status(400).json({ message: "This email is already used!" }) }
+    else {
+        const token = jwt.sign(dataBody, process.env.TokenSecret, { expiresIn: '5m' });
+        var emailURL = `localhost:3000/send/activate/${token}`
+        console.log(emailURL);
+        // const emailBody = {
+        //     from: process.env.SendEmailAddress,
+        //     to: dataBody.email,
+        //     subject: `Account activation link`,
+        //     html: `
+        //     <h1> Please use the link to activate your account</h1>
+        //     <h3> The link below will expire in five(5) minutes </h3>
+        //     <h2>insert link</h2>
+        //     <h3>This email may contain subsentive information</h3>
+        //     `};
+        // sendgrid.send(emailBody).then(() => {
+        //     return res.status(200).json({
+        //         message: `email has been sent to ${data.email}. Follow the instructions to activate your account`
+        //     })
+        // }).catch((err) => {
+        //     console.log(err);
+        //     return res.status(400).json({
+        //         message: err.message
+        //     })
+        // })
     }
+
 })
 
 // activate account route
@@ -129,7 +129,55 @@ router.post('/activate/:token', async (req, res) => {
 
 // login route
 router.post('/login', async (req, res) => {
-    try { } catch (err) { }
+    try {
+        const dataBody = req.body;
+        const dataGallery = await mongoModel.gallery.findOne({ email: dataBody.email });
+        const dataFreelance = await mongoModel.freelancer.findOne({ email: dataBody.email });
+        const dataCustomer = await mongoModel.customer.findOne({ email: dataBody.email });
+        if (dataGallery != null) {
+            if (dataGallery.password == dataBody.password) {
+                const data = {
+                    userID: dataGallery.userID, name: dataGallery.name,
+                    email: dataGallery.email, password: dataGallery.password,
+                    address: dataGallery.address, location: dataGallery.location,
+                    account: dataGallery.account, avatar: dataGallery.avatar, aboutme: dataGallery.aboutme
+                }
+                const tokenGenerated = jwt.sign(data, process.env.TokenSecret, { expiresIn: '7d' });
+                const sendUser = { token: tokenGenerated, user: dataGallery };
+                return res.status(200).json(sendUser);
+            } else { res.status(401).json({ message: 'The password is not correct' }) }
+        }
+        else if (dataFreelance != null) {
+            if (dataFreelance.password == dataBody.password) {
+                const data = {
+                    userID: dataFreelance.userID, name: dataFreelance.name,
+                    email: dataFreelance.email, password: dataFreelance.password,
+                    address: dataFreelance.address, location: dataFreelance.location,
+                    account: dataFreelance.account, avatar: dataFreelance.avatar, aboutme: dataFreelance.aboutme
+                }
+                const tokenGenerated = jwt.sign(data, process.env.TokenSecret, { expiresIn: '7d' });
+                const sendUser = { token: tokenGenerated, user: dataFreelance };
+                return res.status(200).json(sendUser);
+            } else { res.status(401).json({ message: 'The password is not correct' }) }
+        }
+        else if (dataCustomer != null) {
+            if (dataCustomer.password == dataBody.password) {
+                const data = {
+                    userID: dataCustomer.userID, name: dataCustomer.name,
+                    email: dataCustomer.email, password: dataCustomer.password,
+                    address: dataCustomer.address, location: dataCustomer.location,
+                    account: dataCustomer.account, avatar: dataCustomer.avatar, aboutme: dataCustomer.aboutme
+                }
+                const tokenGenerated = jwt.sign(data, process.env.TokenSecret, { expiresIn: '7d' });
+                const sendUser = { token: tokenGenerated, user: dataCustomer };
+                return res.status(200).json(sendUser);
+            } else { res.status(401).json({ message: 'The password is not correct' }) }
+        }
+        else { res.status(402).json({ message: "Email not registered" }) }
+    } catch (err) {
+        res.status(400);
+        console.log(err)
+    }
 })
 
 // update user details
