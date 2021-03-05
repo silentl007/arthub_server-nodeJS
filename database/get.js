@@ -4,8 +4,8 @@ const router = express.Router();
 
 // get gallery data
 router.get('/gallery', async (req, res) => {
+    var sendData = [];
     try {
-        var sendData = [];
         const dataGallery = await mongoModel.gallery.find();
         if (dataGallery != null) {
             // logic to loop through to extract specific information needed
@@ -27,8 +27,8 @@ router.get('/gallery', async (req, res) => {
 
 // get freelance data
 router.get('/freelance', async (req, res) => {
+    var sendData = [];
     try {
-        var sendData = [];
         const dataFreelance = await mongoModel.freelancer.find();
         if (dataFreelance != null) {
             // logic to loop through to extract specific information needed
@@ -47,8 +47,93 @@ router.get('/freelance', async (req, res) => {
     }
 });
 
-// get user data
-router.get('/user/:id', async (req, res) => {
+// get user data //
+
+// get sold works for freelancers and gallery
+router.get('/soldworks/:userID/:accountType', async (req, res) => {
+    const userID = req.params.userID;
+    const accountType = req.params.accountType;
+    if (accountType == 'Gallery') {
+        try {
+            const query = await mongoModel.gallery.findOne({ userID: userID });
+            return res.status(200).send(query.soldworks);
+        } catch (error) {
+            console.log(error);
+            return res.status(400);
+
+        }
+
+    } else {
+        try {
+            const query = await mongoModel.freelancer.findOne({ userID: userID });
+            return res.status(200).send(query.soldworks);
+        } catch (error) {
+            console.log(error);
+            return res.status(400);
+
+        }
+    }
+
+})
+
+// get uploaded works for freelancers and gallery
+router.get('/uploaded/:userID/:accountType', async (req, res) => {
+    const userID = req.params.userID;
+    const accountType = req.params.accountType;
+    if (accountType == 'Gallery') {
+        try {
+            const query = await mongoModel.gallery.findOne({ userID: userID });
+            return res.status(200).send(query.works);
+        } catch (error) {
+            console.log(error);
+            return res.status(400);
+        }
+
+    } else {
+        try {
+            const query = await mongoModel.freelancer.findOne({ userID: userID });
+            return res.status(200).send(query.works);
+        } catch (error) {
+            console.log(error);
+            return res.status(400);
+        }
+    }
+
+})
+
+// orders for all users
+router.get('/orders/:userID/:accountType', async (req, res) => {
+    const userID = req.params.userID;
+    const accountType = req.params.accountType;
+    if (accountType == 'Gallery') {
+        try {
+            const query = await mongoModel.gallery.findOne({ userID: userID });
+            return res.status(200).send(query.orders);
+        } catch (error) {
+            console.log(error);
+            return res.status(400);
+
+        }
+
+    } else if (accountType == 'Freelancer') {
+        try {
+            const query = await mongoModel.freelancer.findOne({ userID: userID });
+            return res.status(200).send(query.orders);
+        } catch (error) {
+            console.log(error);
+            return res.status(400);
+
+        }
+    }
+    else {
+        try {
+            const query = await mongoModel.customer.findOne({ userID: userID });
+            return res.status(200).send(query.orders);
+        } catch (error) {
+            console.log(error);
+            return res.status(400);
+        }
+    }
 
 })
 

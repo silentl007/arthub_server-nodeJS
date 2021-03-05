@@ -181,9 +181,58 @@ router.post('/login', async (req, res) => {
 })
 
 // update user details
-router.patch('/edit/:userID', async (req, res) => {
-    try { } catch (err) { }
+router.patch('/edit/:userID/:accountType', async (req, res) => {
+    const userID = req.params.userID;
+    const accountType = req.params.accountType;
+    if (accountType == 'Gallery') {
+        try {
+            const patched = await mongoModel.gallery.updateOne({ userID: userID },
+                {
+                    $set: {
+                        name: req.body.name, address: req.body.address,
+                        number: req.body.number, location: req.body.location
+                    }
+                })
+            return res.status(200).json(patched);
+        } catch (err) {
+            console.log(err);
+            return res.status(400);
+        }
+    } else if (accountType == 'Customer') {
+        try {
+            const patched = await mongoModel.customer.updateOne({ userID: userID },
+                {
+                    $set: {
+                        name: req.body.name, address: req.body.address,
+                        number: req.body.number, location: req.body.location
+                    }
+                })
+            return res.status(200).json(patched);
+        } catch (err) {
+            console.log(err);
+            return res.status(400);
+        }
+    } else {
+        try {
+            const patched = await mongoModel.freelancer.updateOne({ userID: userID },
+                {
+                    $set: {
+                        name: req.body.name, address: req.body.address,
+                        number: req.body.number, location: req.body.location, 
+                        aboutme: req.body.aboutme, avatar: req.body.avatar
+                    }
+                })
+            return res.status(200).json(patched);
+        } catch (err) { 
+            console.log(err);
+            return res.status(400);
+        }
+    }
+
 })
+
+// upload works for freelance and gallery
+
 
 // delete item
 router.delete('/remove/:userID', async (req, res) => {
