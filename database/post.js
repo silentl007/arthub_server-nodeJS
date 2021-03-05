@@ -13,6 +13,7 @@ const mongoModel = require('./model')
  * 400 -unsuccessful - register -- email already used
  * 402 -unsuccessful - login -- email not found
  * 401 -unsuccessful - login -- password does not match
+ * 400 -failed - all routes - console.log
  */
 
 // register route
@@ -181,9 +182,9 @@ router.post('/login', async (req, res) => {
 })
 
 // update user details
-router.patch('/edit/:userID/:accountType', async (req, res) => {
-    const userID = req.params.userID;
-    const accountType = req.params.accountType;
+router.post('/edit', async (req, res) => {
+    const userID = req.body.userID;
+    const accountType = req.body.accountType;
     if (accountType == 'Gallery') {
         try {
             const patched = await mongoModel.gallery.updateOne({ userID: userID },
@@ -218,12 +219,12 @@ router.patch('/edit/:userID/:accountType', async (req, res) => {
                 {
                     $set: {
                         name: req.body.name, address: req.body.address,
-                        number: req.body.number, location: req.body.location, 
+                        number: req.body.number, location: req.body.location,
                         aboutme: req.body.aboutme, avatar: req.body.avatar
                     }
                 })
             return res.status(200).json(patched);
-        } catch (err) { 
+        } catch (err) {
             console.log(err);
             return res.status(400);
         }
@@ -232,7 +233,44 @@ router.patch('/edit/:userID/:accountType', async (req, res) => {
 })
 
 // upload works for freelance and gallery
+router.post('/uploadworks', async (req, res) => {
+    const userID = req.body.userID;
+    const accountType = req.body.accountType;
+    const data = {
+        userID: req.body.userID,
+        productID: id_generator.v4(),
+        name: req.body.name,
+        accountType: req.body.accountType,
+        product: req.body.product,
+        cost: req.body.cost,
+        type: req.body.type,
+        avatar: req.body.avatar,
+        description: req.body.description,
+        dimension: req.body.dimension,
+        weight: req.body.weight,
+        'material used': req.body.materials,
+        images: req.body.images,
+    }
+    if (accountType == 'Gallery') {
+        try {
+            const query = await mongoModel.gallery.updateOne({ userID: userID }, { $push: { works: data } });
+            return res.status(200).json(query);
+        } catch (err) {
+            console.log(err)
+            return res.status(400);
+        }
+    }
+    else {
+        try {
+            const query = await mongoModel.freelancer.updateOne({ userID: userID }, { $push: { works: data } });
+            return res.status(200).json(query);
+        } catch (err) {
+            console.log(err)
+            return res.status(400);
+         }
+    }
 
+})
 
 // delete item
 router.delete('/remove/:userID', async (req, res) => {

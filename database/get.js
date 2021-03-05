@@ -50,9 +50,9 @@ router.get('/freelance', async (req, res) => {
 // get user data //
 
 // get sold works for freelancers and gallery
-router.get('/soldworks/:userID/:accountType', async (req, res) => {
-    const userID = req.params.userID;
-    const accountType = req.params.accountType;
+router.get('/soldworks', async (req, res) => {
+    const userID = req.body.userID;
+    const accountType = req.body.accountType;
     if (accountType == 'Gallery') {
         try {
             const query = await mongoModel.gallery.findOne({ userID: userID });
@@ -77,9 +77,9 @@ router.get('/soldworks/:userID/:accountType', async (req, res) => {
 })
 
 // get uploaded works for freelancers and gallery
-router.get('/uploaded/:userID/:accountType', async (req, res) => {
-    const userID = req.params.userID;
-    const accountType = req.params.accountType;
+router.get('/uploaded', async (req, res) => {
+    const userID = req.body.userID;
+    const accountType = req.body.accountType;
     if (accountType == 'Gallery') {
         try {
             const query = await mongoModel.gallery.findOne({ userID: userID });
@@ -102,9 +102,9 @@ router.get('/uploaded/:userID/:accountType', async (req, res) => {
 })
 
 // orders for all users
-router.get('/orders/:userID/:accountType', async (req, res) => {
-    const userID = req.params.userID;
-    const accountType = req.params.accountType;
+router.get('/orders', async (req, res) => {
+    const userID = req.body.userID;
+    const accountType = req.body.accountType;
     if (accountType == 'Gallery') {
         try {
             const query = await mongoModel.gallery.findOne({ userID: userID });
