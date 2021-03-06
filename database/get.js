@@ -102,7 +102,7 @@ router.get('/uploaded', async (req, res) => {
 
 })
 
-// orders for all users
+// get orders for all users
 router.get('/orders', async (req, res) => {
     const userID = req.body.userID;
     const accountType = req.body.accountType;
@@ -130,6 +130,42 @@ router.get('/orders', async (req, res) => {
         try {
             const query = await mongoModel.customer.findOne({ userID: userID });
             return res.status(200).send(query.orders);
+        } catch (error) {
+            console.log(error);
+            return res.status(400);
+        }
+    }
+
+})
+
+// get cart items for all users
+router.get('/cartget', async (req, res) => {
+    const userID = req.body.userID;
+    const accountType = req.body.accountType;
+    if (accountType == 'Gallery') {
+        try {
+            const query = await mongoModel.gallery.findOne({ userID: userID });
+            return res.status(200).send(query.cart);
+        } catch (error) {
+            console.log(error);
+            return res.status(400);
+
+        }
+
+    } else if (accountType == 'Freelancer') {
+        try {
+            const query = await mongoModel.freelancer.findOne({ userID: userID });
+            return res.status(200).send(query.cart);
+        } catch (error) {
+            console.log(error);
+            return res.status(400);
+
+        }
+    }
+    else {
+        try {
+            const query = await mongoModel.customer.findOne({ userID: userID });
+            return res.status(200).send(query.cart);
         } catch (error) {
             console.log(error);
             return res.status(400);

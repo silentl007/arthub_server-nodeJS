@@ -29,6 +29,8 @@ router.post('/register', async (req, res) => {
         // Sends email
         const token = jwt.sign(dataBody, process.env.TokenSecret, { expiresIn: '5m' });
         var emailURL = `https://localhost:3000/apiS/activate/${token}`
+        // for the email body, you can cc, bcc other email addresses and add attachments
+        // check video 'Send email with Nodemailer using gmail account - Nodejs' for details
         let emailBody = {
             from: process.env.ArtEmail,
             to: dataBody.email,
@@ -50,10 +52,10 @@ router.post('/register', async (req, res) => {
         transporter.sendMail(emailBody, async (err, data) => {
             if (err) {
                 console.log(err);
-                return res.status(400).json({message: 'Email was not sent! Check console'});
+                return res.status(400).json({ message: 'Email was not sent! Check console' });
             } else {
                 console.log('Success!', data)
-                return res.status(200).json({message: 'Email has been sent!'});
+                return res.status(200).json({ message: 'Email has been sent!' });
             }
         })
     }
@@ -241,6 +243,8 @@ router.post('/edit', async (req, res) => {
 router.post('/uploadworks', async (req, res) => {
     const userID = req.body.userID;
     const accountType = req.body.accountType;
+    // I know data can be simplified using data = req.body, then data.productID = id_generator.v4()
+    // just accept it like that, lol, makes properties easier to track in my head
     const data = {
         userID: req.body.userID,
         productID: id_generator.v4(),
@@ -277,9 +281,37 @@ router.post('/uploadworks', async (req, res) => {
 
 })
 
-// delete item
-router.delete('/remove/:userID', async (req, res) => {
-    try { } catch (err) { }
+// add to cart
+router.post('/cartadd/:userID/:accountType', async (req, res) => {
+    const itemDetails = req.body;
+    const userID = req.params.userID;
+    const accountType = req.params.accountType
+    if (accountType == 'Gallery') {
+        try {
+            const query = await mongoModel.gallery.updateOne({ userID: userID }, { $push: { cart: itemDetails } });
+            return res.status(200).json(query)
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json({ message: 'Error occurred, check console' })
+        }
+    } else if (accountType == 'Freelancer') {
+        try {
+            const query = await mongoModel.freelancer.updateOne({ userID: userID }, { $push: { cart: itemDetails } });
+            return res.status(200).json(query)
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json({ message: 'Error occurred, check console' })
+        }
+    } else {
+        try {
+            const query = await mongoModel.customer.updateOne({ userID: userID }, { $push: { cart: itemDetails } });
+            return res.status(200).json(query)
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json({ message: 'Error occurred, check console' })
+        }
+    }
+
 })
 
 module.exports = router

@@ -3,7 +3,8 @@ const cors = require('cors');
 const mongo = require('mongoose');
 const bodyParser = require('body-parser');
 const post = require('./database/post');
-const get = require('./database/get')
+const get = require('./database/get');
+const remove = require('./database/remove')
 require('dotenv/config');
 
 const app = express();
@@ -16,6 +17,9 @@ app.use('/apiS', post)
 
 // MiddleWare for receiving data route
 app.use('/apiR', get)
+
+// MiddleWare for removing items route
+app.use('/apiD', remove)
 
 
 // Connect to mongo database
