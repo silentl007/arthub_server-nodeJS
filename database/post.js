@@ -1,10 +1,8 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
 const id_generator = require('uuid');
 const jwt = require('jsonwebtoken');
-const sendgrid = require('@sendgrid/mail');
-sendgrid.setApiKey(process.env.SendGridAPI);
-require('dotenv')
+require('dotenv').config();
 const router = express.Router();
 const mongoModel = require('./model')
 
@@ -28,29 +26,36 @@ router.post('/register', async (req, res) => {
     } else if (dataFreelance != null) { return res.status(400).json({ message: "This email is already used!" }) }
     else if (dataCustomer != null) { return res.status(400).json({ message: "This email is already used!" }) }
     else {
+        // Sends email
         const token = jwt.sign(dataBody, process.env.TokenSecret, { expiresIn: '5m' });
-        var emailURL = `localhost:3000/send/activate/${token}`
-        console.log(emailURL);
-        // const emailBody = {
-        //     from: process.env.SendEmailAddress,
-        //     to: dataBody.email,
-        //     subject: `Account activation link`,
-        //     html: `
-        //     <h1> Please use the link to activate your account</h1>
-        //     <h3> The link below will expire in five(5) minutes </h3>
-        //     <h2>insert link</h2>
-        //     <h3>This email may contain subsentive information</h3>
-        //     `};
-        // sendgrid.send(emailBody).then(() => {
-        //     return res.status(200).json({
-        //         message: `email has been sent to ${data.email}. Follow the instructions to activate your account`
-        //     })
-        // }).catch((err) => {
-        //     console.log(err);
-        //     return res.status(400).json({
-        //         message: err.message
-        //     })
-        // })
+        var emailURL = `https://localhost:3000/apiS/activate/${token}`
+        let emailBody = {
+            from: process.env.ArtEmail,
+            to: dataBody.email,
+            subject: `Account activation link`,
+            html: `
+                <h1> Please use the link to activate your account</h1>
+                <h3> The link below will expire in five(5) minutes </h3>
+                <h2>${emailURL}</h2>
+                <h3>This email may contain subsentive information</h3>
+                `
+        }
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.ArtEmail,
+                pass: process.env.ArtPassword,
+            }
+        })
+        transporter.sendMail(emailBody, async (err, data) => {
+            if (err) {
+                console.log(err);
+                return res.status(400).json({message: 'Email was not sent! Check console'});
+            } else {
+                console.log('Success!', data)
+                return res.status(200).json({message: 'Email has been sent!'});
+            }
+        })
     }
 
 })
@@ -267,7 +272,7 @@ router.post('/uploadworks', async (req, res) => {
         } catch (err) {
             console.log(err)
             return res.status(400);
-         }
+        }
     }
 
 })

@@ -8,18 +8,18 @@ require('dotenv/config');
 
 const app = express();
 // MiddleWare for all routes
-// app.use(cors());
+app.use(cors());
 app.use(bodyParser.json());
 
 // MiddleWare for data sending route
-app.use('/send',post)
+app.use('/apiS', post)
 
 // MiddleWare for receiving data route
-app.use('/receive', get)
+app.use('/apiR', get)
 
 
 // Connect to mongo database
-mongo.connect(process.env.MongoString, { useNewUrlParser: true, useUnifiedTopology: true }, (error) => {
+mongo.connect(process.env.MongoString, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, (error) => {
     if (error) {
         console.log(error);
     } else

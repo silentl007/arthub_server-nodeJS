@@ -35,6 +35,7 @@ router.get('/freelance', async (req, res) => {
             for (var i = 0; i < dataFreelance.length; i++) {
                 var mapData = {
                     name: dataFreelance[i].name, address: dataFreelance[i].address,
+                    aboutme: dataFreelance[i].aboutme, avatar: dataFreelance[i].avatar,
                     location: dataFreelance[i].location, number: dataFreelance[i].number,
                     works: dataFreelance[i].works
                 };
