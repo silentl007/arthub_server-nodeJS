@@ -13,17 +13,17 @@ router.put('/resetpassword', async (req, res) => {
     if (dataGallery != null) {
         const dataBody = { email: req.body.email, password: req.body.password, accountType: 'Gallery', name: dataGallery.name }
         const token = jwt.sign(dataBody, process.env.TokenSecret, { expiresIn: '5m' });
-        var emailURL = `${process.env.URL}/apiC/resetpassword/${token}`;
+        var emailURL = `${process.env.URL}/apiC/updatepassword/${token}`;
         sendMail(dataBody.name, dataBody.email, emailURL, res);
     } else if (dataFreelance != null) {
         const dataBody = { email: req.body.email, password: req.body.password, accountType: 'Freelancer', name: dataGallery.name }
         const token = jwt.sign(dataBody, process.env.TokenSecret, { expiresIn: '5m' });
-        var emailURL = `${process.env.URL}/apiC/resetpassword/${token}`;
+        var emailURL = `${process.env.URL}/apiC/updatepassword/${token}`;
         sendMail(dataBody.name, dataBody.email, emailURL, res);
     } else if (dataCustomer != null) {
         const dataBody = { email: req.body.email, password: req.body.password, accountType: 'Customer', name: dataGallery.name }
         const token = jwt.sign(dataBody, process.env.TokenSecret, { expiresIn: '5m' });
-        var emailURL = `${process.env.URL}/apiC/resetpassword/${token}`;
+        var emailURL = `${process.env.URL}/apiC/updatepassword/${token}`;
         sendMail(dataBody.name, dataBody.email, emailURL, res);
     } else {
         return res.status(401).json({ message: 'Email not found' });
