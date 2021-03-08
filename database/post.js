@@ -35,7 +35,7 @@ router.post('/register', async (req, res) => {
 })
 
 // activate account route
-router.post('/activate/:token', async (req, res) => {
+router.get('/activate/:token', async (req, res) => {
     const receivedToken = req.params.token;
     if (receivedToken) {
         jwt.verify(receivedToken, process.env.TokenSecret, (err, decoded) => {

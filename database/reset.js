@@ -47,7 +47,7 @@ router.get('/updatepassword/:token', async (req, res) => {
                     try {
                         const updatePassword = await mongoModel.gallery.updateOne(
                             { email: req.body.email }, { $set: { password: decodedToken.password } });
-                        return res.status(200).json({ message: 'Password change successfully!' });
+                        return res.status(200).json({ message: 'Password changed successfully!' });
                     } catch (error) {
                         console.log(error);
                         return res.status(400).json({ message: 'Password change unsuccessful!' });
@@ -56,7 +56,7 @@ router.get('/updatepassword/:token', async (req, res) => {
                     try {
                         const updatePassword = await mongoModel.customer.updateOne(
                             { email: req.body.email }, { $set: { password: decodedToken.password } });
-                        return res.status(200).json({ message: 'Password change successfully!' });
+                        return res.status(200).json({ message: 'Password changed successfully!' });
                     } catch (error) {
                         console.log(error);
                         return res.status(400).json({ message: 'Password change unsuccessful!' });
@@ -65,7 +65,7 @@ router.get('/updatepassword/:token', async (req, res) => {
                     try {
                         const updatePassword = await mongoModel.freelancer.updateOne(
                             { email: req.body.email }, { $set: { password: decodedToken.password } });
-                        return res.status(200).json({ message: 'Password change successfully!' });
+                        return res.status(200).json({ message: 'Password changed successfully!' });
                     } catch (error) {
                         console.log(error);
                         return res.status(400).json({ message: 'Password change unsuccessful!' });
