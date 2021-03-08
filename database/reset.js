@@ -34,7 +34,7 @@ router.put('/resetpassword', async (req, res) => {
 
 
 // update password
-router.post('/updatepassword/:token', async (req, res) => {
+router.get('/updatepassword/:token', async (req, res) => {
     const receivedToken = req.params.token;
     if (receivedToken) {
         jwt.verify(receivedToken, process.env.TokenSecret, async (err, decoded) => {
