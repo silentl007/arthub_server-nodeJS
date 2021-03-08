@@ -14,6 +14,7 @@
  * CartItems
  * CartItemRemove
  * UploadedItemRemove
+ * Password Reset
  */
 
 // POST requests
