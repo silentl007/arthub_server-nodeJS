@@ -34,4 +34,7 @@ mongo.connect(process.env.MongoString, { useNewUrlParser: true, useUnifiedTopolo
         console.log('Connected!');
 })
 
-app.listen(3000);
+// Port
+var Port = process.env.PORT || 3000;
+
+app.listen(Port);
