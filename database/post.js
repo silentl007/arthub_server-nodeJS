@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const router = express.Router();
 const mongoModel = require('./model')
+const mailgen = require('mailgen');
 
 /** response codes
  * 200 -successful - general successful
@@ -28,38 +29,9 @@ router.post('/register', async (req, res) => {
     else {
         // Sends email
         const token = jwt.sign(dataBody, process.env.TokenSecret, { expiresIn: '5m' });
-        var emailURL = `https://localhost:3000/apiS/activate/${token}`
-        // for the email body, you can cc, bcc other email addresses and add attachments
-        // check video 'Send email with Nodemailer using gmail account - Nodejs' for details
-        let emailBody = {
-            from: process.env.ArtEmail,
-            to: dataBody.email,
-            subject: `Account activation link`,
-            html: `
-                <h1> Please use the link to activate your account</h1>
-                <h3> The link below will expire in five(5) minutes </h3>
-                <h2>${emailURL}</h2>
-                <h3>This email may contain subsentive information</h3>
-                `
-        }
-        let transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.ArtEmail,
-                pass: process.env.ArtPassword,
-            }
-        })
-        transporter.sendMail(emailBody, async (err, data) => {
-            if (err) {
-                console.log(err);
-                return res.status(400).json({ message: 'Email was not sent! Check console' });
-            } else {
-                console.log('Success!', data)
-                return res.status(200).json({ message: 'Email has been sent!' });
-            }
-        })
+        var emailURL = `${process.env.URL}/apiS/activate/${token}`;
+        sendMail(dataBody.name, dataBody.email, emailURL, res);
     }
-
 })
 
 // activate account route
@@ -72,7 +44,7 @@ router.post('/activate/:token', async (req, res) => {
             } else {
                 const decodedToken = jwt.decode(receivedToken);
                 // logic to determine which collection to store the registered user based on accoutnt type
-                if (decodedToken.account == "Gallery") {
+                if (decodedToken.accountType == "Gallery") {
                     const userEntry = new mongoModel.gallery({
                         userID: id_generator.v4(),
                         name: decodedToken.name,
@@ -80,7 +52,7 @@ router.post('/activate/:token', async (req, res) => {
                         password: decodedToken.password,
                         address: decodedToken.address,
                         location: decodedToken.location,
-                        account: decodedToken.account,
+                        accountType: decodedToken.accountType,
                         number: decodedToken.number,
                     });
                     userEntry.save((err) => {
@@ -90,7 +62,7 @@ router.post('/activate/:token', async (req, res) => {
                             res.status(200).json({ message: "Activation successful. You can login in!" })
                         }
                     })
-                } else if (decodedToken.account == "Freelancer") {
+                } else if (decodedToken.accountType == "Freelancer") {
                     const userEntry = new mongoModel.freelancer({
                         userID: id_generator.v4(),
                         name: decodedToken.name,
@@ -98,7 +70,7 @@ router.post('/activate/:token', async (req, res) => {
                         password: decodedToken.password,
                         address: decodedToken.address,
                         location: decodedToken.location,
-                        account: decodedToken.account,
+                        accountType: decodedToken.accountType,
                         number: decodedToken.number,
                     });
                     userEntry.save((err) => {
@@ -117,7 +89,7 @@ router.post('/activate/:token', async (req, res) => {
                         password: decodedToken.password,
                         address: decodedToken.address,
                         location: decodedToken.location,
-                        account: decodedToken.account,
+                        accountType: decodedToken.accountType,
                         number: decodedToken.number,
                     });
                     userEntry.save((err) => {
@@ -148,7 +120,7 @@ router.post('/login', async (req, res) => {
                     userID: dataGallery.userID, name: dataGallery.name,
                     email: dataGallery.email, password: dataGallery.password,
                     address: dataGallery.address, location: dataGallery.location,
-                    account: dataGallery.account, avatar: dataGallery.avatar, aboutme: dataGallery.aboutme
+                    accountType: dataGallery.accountType, avatar: dataGallery.avatar, aboutme: dataGallery.aboutme
                 }
                 const tokenGenerated = jwt.sign(data, process.env.TokenSecret, { expiresIn: '7d' });
                 const sendUser = { token: tokenGenerated, user: dataGallery };
@@ -161,7 +133,7 @@ router.post('/login', async (req, res) => {
                     userID: dataFreelance.userID, name: dataFreelance.name,
                     email: dataFreelance.email, password: dataFreelance.password,
                     address: dataFreelance.address, location: dataFreelance.location,
-                    account: dataFreelance.account, avatar: dataFreelance.avatar, aboutme: dataFreelance.aboutme
+                    accountType: dataFreelance.accountType, avatar: dataFreelance.avatar, aboutme: dataFreelance.aboutme
                 }
                 const tokenGenerated = jwt.sign(data, process.env.TokenSecret, { expiresIn: '7d' });
                 const sendUser = { token: tokenGenerated, user: dataFreelance };
@@ -174,7 +146,7 @@ router.post('/login', async (req, res) => {
                     userID: dataCustomer.userID, name: dataCustomer.name,
                     email: dataCustomer.email, password: dataCustomer.password,
                     address: dataCustomer.address, location: dataCustomer.location,
-                    account: dataCustomer.account, avatar: dataCustomer.avatar, aboutme: dataCustomer.aboutme
+                    accountType: dataCustomer.accountType, avatar: dataCustomer.avatar, aboutme: dataCustomer.aboutme
                 }
                 const tokenGenerated = jwt.sign(data, process.env.TokenSecret, { expiresIn: '7d' });
                 const sendUser = { token: tokenGenerated, user: dataCustomer };
@@ -313,5 +285,65 @@ router.post('/cartadd/:userID/:accountType', async (req, res) => {
     }
 
 })
+
+function sendMail(userName, userEmail, emailURL, res) {
+    // for the email body, you can cc, bcc other email addresses and add attachments
+    // check video 'Send email with Nodemailer using gmail account - Nodejs' for details
+    // used mail generator for the template
+
+    // generator for the theme, product name and link
+    const mailgenerator = new mailgen({
+        theme: 'default',
+        product: {
+            name: 'ArtHub',
+            link: 'https://mailgen.js/'
+        }
+    });
+
+    // creating the content of the email
+    let emailContent = {
+        body: {
+            name: `${userName}`,
+            intro: 'Welcome to ArtHub! We\'re very excited to have you on board.',
+            action: {
+                instructions: 'To get started with ArtHub, please click the link below. The link will expire in five (5) minutes',
+                button: {
+                    color: '#22BC66',
+                    text: 'Activate your account',
+                    link: `${emailURL}`
+                }
+            },
+            outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
+        }
+    }
+
+    // transforming the content to HTML
+    var generateEmailHTML = mailgenerator.generate(emailContent);
+
+    // creating the email body used by nodemailer
+    let emailBody = {
+        from: process.env.ArtEmail,
+        to: userEmail,
+        subject: `Account activation link`,
+        html: `${generateEmailHTML}
+                `
+    }
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.ArtEmail,
+            pass: process.env.ArtPassword,
+        }
+    })
+    transporter.sendMail(emailBody, async (err, data) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).json({ message: 'Email was not sent! Check console' });
+        } else {
+            console.log('Success!', data)
+            return res.status(200).json({ message: 'Email has been sent!' });
+        }
+    })
+}
 
 module.exports = router

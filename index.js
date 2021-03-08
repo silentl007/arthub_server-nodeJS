@@ -4,6 +4,7 @@ const mongo = require('mongoose');
 const bodyParser = require('body-parser');
 const post = require('./database/post');
 const get = require('./database/get');
+const reset = require('./database/reset');
 const remove = require('./database/remove')
 require('dotenv/config');
 
@@ -20,6 +21,9 @@ app.use('/apiR', get)
 
 // MiddleWare for removing items route
 app.use('/apiD', remove)
+
+// Middleware for password reset route
+app.use('/apiC', reset)
 
 
 // Connect to mongo database

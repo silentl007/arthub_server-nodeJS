@@ -27,7 +27,7 @@ const Register = {
         "password": "xxx",
         "address": "Lagos",
         "location": "enter_address",
-        "account": "Gallery",
+        "accountType": "Gallery",
         "number": 1234
     },
     dataToReceive: 'email to activate account'
@@ -43,7 +43,7 @@ const Login = {
     },
     dataToReceive: {
         token: 'token',
-        user: 'user data',
+        user: { data: 'user data' },
     }
 }
 
@@ -281,3 +281,13 @@ const UploadedItemRemove = {
     dataToReceive: 'status code'
 }
 
+// Reset Password
+const Reset = {
+    link: '/apiC/resetpassword',
+    type: 'PUT',
+    dataToSend: {
+        "email": "",
+        "password": "",
+    },
+    dataToReceive: 'status code'
+}

@@ -34,7 +34,7 @@ const user_register = mongoose.Schema({
         type: String,
         required: true,
     },
-    account: {
+    accountType: {
         type: String,
         required: true,
     },
