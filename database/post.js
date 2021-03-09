@@ -123,7 +123,7 @@ router.post('/login', async (req, res) => {
                     accountType: dataGallery.accountType, avatar: dataGallery.avatar, aboutme: dataGallery.aboutme
                 }
                 const tokenGenerated = jwt.sign(data, process.env.TokenSecret, { expiresIn: '7d' });
-                const sendUser = { token: tokenGenerated, user: dataGallery };
+                const sendUser = { token: tokenGenerated, user: data };
                 return res.status(200).json(sendUser);
             } else { res.status(401).json({ message: 'The password is not correct' }) }
         }
@@ -136,7 +136,7 @@ router.post('/login', async (req, res) => {
                     accountType: dataFreelance.accountType, avatar: dataFreelance.avatar, aboutme: dataFreelance.aboutme
                 }
                 const tokenGenerated = jwt.sign(data, process.env.TokenSecret, { expiresIn: '7d' });
-                const sendUser = { token: tokenGenerated, user: dataFreelance };
+                const sendUser = { token: tokenGenerated, user: data };
                 return res.status(200).json(sendUser);
             } else { res.status(401).json({ message: 'The password is not correct' }) }
         }
@@ -149,7 +149,7 @@ router.post('/login', async (req, res) => {
                     accountType: dataCustomer.accountType, avatar: dataCustomer.avatar, aboutme: dataCustomer.aboutme
                 }
                 const tokenGenerated = jwt.sign(data, process.env.TokenSecret, { expiresIn: '7d' });
-                const sendUser = { token: tokenGenerated, user: dataCustomer };
+                const sendUser = { token: tokenGenerated, user: data };
                 return res.status(200).json(sendUser);
             } else { res.status(401).json({ message: 'The password is not correct' }) }
         }
