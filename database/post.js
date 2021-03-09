@@ -120,7 +120,8 @@ router.post('/login', async (req, res) => {
                     userID: dataGallery.userID, name: dataGallery.name,
                     email: dataGallery.email, password: dataGallery.password,
                     address: dataGallery.address, location: dataGallery.location,
-                    accountType: dataGallery.accountType, avatar: dataGallery.avatar, aboutme: dataGallery.aboutme
+                    accountType: dataGallery.accountType, avatar: dataGallery.avatar, aboutme: dataGallery.aboutme,
+                    number: dataGallery.number
                 }
                 const tokenGenerated = jwt.sign(data, process.env.TokenSecret, { expiresIn: '7d' });
                 const sendUser = { token: tokenGenerated, user: data };
@@ -133,7 +134,8 @@ router.post('/login', async (req, res) => {
                     userID: dataFreelance.userID, name: dataFreelance.name,
                     email: dataFreelance.email, password: dataFreelance.password,
                     address: dataFreelance.address, location: dataFreelance.location,
-                    accountType: dataFreelance.accountType, avatar: dataFreelance.avatar, aboutme: dataFreelance.aboutme
+                    accountType: dataFreelance.accountType, avatar: dataFreelance.avatar, aboutme: dataFreelance.aboutme,
+                    number: dataFreelance.number
                 }
                 const tokenGenerated = jwt.sign(data, process.env.TokenSecret, { expiresIn: '7d' });
                 const sendUser = { token: tokenGenerated, user: data };
@@ -146,7 +148,8 @@ router.post('/login', async (req, res) => {
                     userID: dataCustomer.userID, name: dataCustomer.name,
                     email: dataCustomer.email, password: dataCustomer.password,
                     address: dataCustomer.address, location: dataCustomer.location,
-                    accountType: dataCustomer.accountType, avatar: dataCustomer.avatar, aboutme: dataCustomer.aboutme
+                    accountType: dataCustomer.accountType, avatar: dataCustomer.avatar, aboutme: dataCustomer.aboutme,
+                    number: dataCustomer.number
                 }
                 const tokenGenerated = jwt.sign(data, process.env.TokenSecret, { expiresIn: '7d' });
                 const sendUser = { token: tokenGenerated, user: data };
