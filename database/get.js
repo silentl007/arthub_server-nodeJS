@@ -139,9 +139,9 @@ router.get('/orders', async (req, res) => {
 })
 
 // get cart items for all users
-router.get('/cartget', async (req, res) => {
-    const userID = req.body.userID;
-    const accountType = req.body.accountType;
+router.get('/cartget/:userID/:accountType', async (req, res) => {
+    const userID = req.params.userID;
+    const accountType = req.params.accountType;
     if (accountType == 'Gallery') {
         try {
             const query = await mongoModel.gallery.findOne({ userID: userID });

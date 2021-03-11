@@ -232,7 +232,7 @@ const Orders = {
 
 const CartItems = {
     // tested
-    link: '/apiR/cartget',
+    link: '/apiR/cartget/:userID/:accountType',
     type: 'GET',
     dataToSend: {
         "userID": "",
@@ -251,7 +251,7 @@ const CartItems = {
             "description": "test product",
             "dimension": "10 x 49",
             "weight": 10,
-            "material used": "Oil, paint",
+            "materials": "Oil, paint",
             "images": []
         }
     ]
