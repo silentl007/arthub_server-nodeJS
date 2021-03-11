@@ -232,7 +232,7 @@ router.post('/uploadworks', async (req, res) => {
         description: req.body.description,
         dimension: req.body.dimension,
         weight: req.body.weight,
-        'material used': req.body.materials,
+        materials: req.body.materials,
         images: req.body.images,
     }
     if (accountType == 'Gallery') {
