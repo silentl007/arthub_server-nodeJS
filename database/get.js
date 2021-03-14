@@ -145,7 +145,8 @@ router.get('/cartget/:userID/:accountType', async (req, res) => {
     if (accountType == 'Gallery') {
         try {
             const query = await mongoModel.gallery.findOne({ userID: userID });
-            console.log(typeof(query.cart))
+            console.log(typeof(query.cart));
+            console.log(query.cart);
             return res.status(200).send(query.cart);
         } catch (error) {
             console.log(error);
