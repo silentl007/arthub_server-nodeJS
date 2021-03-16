@@ -6,6 +6,7 @@
  * EditProfile
  * UploadWork
  * AddCart
+ * Order Add
  * Galleries
  * Freelancers
  * SoldWorks
@@ -109,6 +110,23 @@ const AddCart = {
     dataToReceive: 'status code'
 }
 
+
+const OrdersAdd = {
+    // tested
+    link: '/purchaseorders',
+    type: 'POST',
+    dataToSend : {
+        "userID": "",
+        "status":"Pending", // default
+        "itemnumber": Number,
+        "totalcost": Number,
+        "itemscost": Number,
+        "purchaseditems": [],
+    },
+    dataToReceive : 'status code'
+
+}
+
 // GET requests
 const Galleries = {
     // tested
@@ -146,7 +164,7 @@ const Freelancers = {
 
 const SoldWorks = {
     // tested
-    link: '/apiR/soldworks',
+    link: '/apiR/soldworks/:userID/:accountType',
     type: 'GET',
     dataToSend: {
         "userID": "",
@@ -173,7 +191,7 @@ const SoldWorks = {
 
 const UploadedWorks = {
     // tested
-    link: '/apiR/uploaded',
+    link: '/apiR/uploaded/:userID/:accountType',
     type: 'GET',
     dataToSend: {
         "userID": "",
@@ -200,7 +218,7 @@ const UploadedWorks = {
 
 const Orders = {
     // tested
-    link: '/apiR/orders',
+    link: '/apiR/orders/:userID/:accountType', //data to send are params as userID and accountType
     type: 'GET',
     dataToSend: {
         "userID": "",
@@ -260,7 +278,7 @@ const CartItems = {
 // DELETE
 const CartItemRemove = {
     // tested
-    link: '/apiD/cartremove',
+    link: '/apiD/cartremove/:userID/:productID/:accountType',
     type: 'DELETE',
     dataToSend: {
         "userID": "",
@@ -272,7 +290,7 @@ const CartItemRemove = {
 
 const UploadedItemRemove = {
     // tested
-    link: '/apiD/uploadremove',
+    link: '/apiD/uploadremove/:userID/:productID/:accountType',
     type: 'DELETE',
     dataToSend: {
         "userID": "",

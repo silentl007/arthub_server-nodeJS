@@ -289,6 +289,52 @@ router.post('/cartadd/:userID/:accountType', async (req, res) => {
 
 })
 
+router.post('/purchaseorders', async (req, res) => {
+    const cartitems = req.body.cartitems;
+    const userID = req.body.userID;
+    const accountType = req.body.accountType
+    const itemscost = req.body.itemscost
+    const totalcost = req.body.totalcost
+    const itemnumber = req.body.itemnumber
+    const body = {
+        orderID: id_generator.v4(),
+        userID: userID,
+        accountType: accountType,
+        status: "Pending",
+        itemnumber: itemnumber,
+        date: Date.now(),
+        totalcost: totalcost,
+        itemscost: itemscost,
+        purchaseditems: cartitems,
+    }
+    if (accountType == 'Gallery') {
+        try {
+            const query = await mongoModel.gallery.updateOne({ userID: userID }, { $push: { orders: body } });
+            return res.status(200)
+        } catch (error) {
+            console.log(error);
+            return res.status(400)
+        }
+
+    } else if (accountType == 'Freelancer') {
+        try {
+            const query = await mongoModel.freelancer.updateOne({ userID: userID }, { $push: { orders: body } });
+            return res.status(200)
+        } catch (error) {
+            console.log(error);
+            return res.status(400)
+        }
+    } else {
+        try {
+            const query = await mongoModel.customer.updateOne({ userID: userID }, { $push: { orders: body } });
+            return res.status(200)
+        } catch (error) {
+            console.log(error);
+            return res.status(400)
+        }
+    }
+})
+
 function sendMail(userName, userEmail, emailURL, res) {
     // for the email body, you can cc, bcc other email addresses and add attachments
     // check video 'Send email with Nodemailer using gmail account - Nodejs' for details
