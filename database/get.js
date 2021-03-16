@@ -51,9 +51,9 @@ router.get('/freelance', async (req, res) => {
 // get user data //
 
 // get sold works for freelancers and gallery
-router.get('/soldworks', async (req, res) => {
-    const userID = req.body.userID;
-    const accountType = req.body.accountType;
+router.get('/soldworks/:userID/:accountType', async (req, res) => {
+    const userID = req.params.userID;
+    const accountType = req.params.accountType;
     if (accountType == 'Gallery') {
         try {
             const query = await mongoModel.gallery.findOne({ userID: userID });
@@ -78,9 +78,9 @@ router.get('/soldworks', async (req, res) => {
 })
 
 // get uploaded works for freelancers and gallery
-router.get('/uploaded', async (req, res) => {
-    const userID = req.body.userID;
-    const accountType = req.body.accountType;
+router.get('/uploaded/:userID/:accountType', async (req, res) => {
+    const userID = req.params.userID;
+    const accountType = req.params.accountType;
     if (accountType == 'Gallery') {
         try {
             const query = await mongoModel.gallery.findOne({ userID: userID });
@@ -103,9 +103,9 @@ router.get('/uploaded', async (req, res) => {
 })
 
 // get orders for all users
-router.get('/orders', async (req, res) => {
-    const userID = req.body.userID;
-    const accountType = req.body.accountType;
+router.get('/orders/:userID/:accountType', async (req, res) => {
+    const userID = req.params.userID;
+    const accountType = req.params.accountType;
     if (accountType == 'Gallery') {
         try {
             const query = await mongoModel.gallery.findOne({ userID: userID });
@@ -142,7 +142,7 @@ router.get('/orders', async (req, res) => {
 router.get('/cartget/:userID/:accountType', async (req, res) => {
     const userID = req.params.userID;
     const accountType = req.params.accountType;
-    if (accountType == 'Gallery') {
+    if (accountType == 'Gallery') { 
         try {
             const query = await mongoModel.gallery.findOne({ userID: userID });
             return res.status(200).send(query.cart);

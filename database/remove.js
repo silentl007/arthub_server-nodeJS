@@ -3,10 +3,10 @@ const mongoModel = require('./model')
 const router = express.Router();
 
 // remove item from cart all users
-router.delete('/cartremove', async (req, res) => {
-    const productID = req.body.productID;
-    const userID = req.body.userID;
-    const accountType = req.body.accountType;
+router.delete('/cartremove/:userID/:productID/:accountType', async (req, res) => {
+    const productID = req.params.productID;
+    const userID = req.params.userID;
+    const accountType = req.params.accountType;
     if (accountType == 'Gallery') {
         try {
             const query = await mongoModel.gallery.updateOne({ userID: userID },
@@ -38,10 +38,10 @@ router.delete('/cartremove', async (req, res) => {
 })
 
 // remove uploaded item for gallery and freelancer
-router.delete('/uploadremove', async (req, res) => {
-    const productID = req.body.productID;
-    const userID = req.body.userID;
-    const accountType = req.body.accountType;
+router.delete('/uploadremove/:userID/:productID/:accountType', async (req, res) => {
+    const productID = req.params.productID;
+    const userID = req.params.userID;
+    const accountType = req.params.accountType;
     if (accountType == 'Gallery') {
         try {
             const query = await mongoModel.gallery.updateOne({ userID: userID },
