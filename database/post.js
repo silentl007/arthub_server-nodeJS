@@ -239,7 +239,6 @@ router.post('/uploadworks', async (req, res) => {
         images: req.body.images,
         date: dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT"),
     }
-    console.log(data)
     if (accountType == 'Gallery') {
         try {
             const query = await mongoModel.gallery.updateOne({ userID: userID }, { $push: { works: data } });

@@ -3,15 +3,15 @@
 /** Routes completed so far
  * Register
  * Login - implemented
- * EditProfile
+ * EditProfile - implemented
  * UploadWork - implemented
  * AddCart - implemented
- * Order Add
+ * Order Add (data to send at checkout)
  * Galleries - implemented
  * Freelancers - implemented
  * SoldWorks
  * UploadedWorks - implemented
- * Orders
+ * Orders (get orders pending or delivered)
  * CartItems - implemented
  * CartItemRemove - implemented
  * UploadedItemRemove - implemented

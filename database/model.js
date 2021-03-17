@@ -62,7 +62,7 @@ const user_register = mongoose.Schema({
         default: [],
     },
     dateCreated: {
-        type: Date,
+        type: String,
         default: dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT"),
     }
 })
