@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const dateFormat = require('dateformat');
+var now = new Date()
+
 const user_register = mongoose.Schema({
     userID: {
         type: String,
@@ -60,7 +63,7 @@ const user_register = mongoose.Schema({
     },
     dateCreated: {
         type: Date,
-        default: Date.now,
+        default: dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT"),
     }
 })
 

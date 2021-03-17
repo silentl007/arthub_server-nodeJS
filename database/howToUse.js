@@ -2,19 +2,19 @@
 
 /** Routes completed so far
  * Register
- * Login
+ * Login - implemented
  * EditProfile
- * UploadWork
- * AddCart
+ * UploadWork - implemented
+ * AddCart - implemented
  * Order Add
- * Galleries
- * Freelancers
+ * Galleries - implemented
+ * Freelancers - implemented
  * SoldWorks
- * UploadedWorks
+ * UploadedWorks - implemented
  * Orders
- * CartItems
- * CartItemRemove
- * UploadedItemRemove
+ * CartItems - implemented
+ * CartItemRemove - implemented
+ * UploadedItemRemove - implemented
  * Password Reset
  */
 

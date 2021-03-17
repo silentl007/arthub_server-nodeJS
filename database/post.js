@@ -6,6 +6,8 @@ require('dotenv').config();
 const router = express.Router();
 const mongoModel = require('./model')
 const mailgen = require('mailgen');
+const dateFormat = require('dateformat');
+var now = new Date();
 
 /** response codes
  * 200 -successful - general successful
@@ -235,6 +237,7 @@ router.post('/uploadworks', async (req, res) => {
         weight: req.body.weight,
         materials: req.body.materials,
         images: req.body.images,
+        date: dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT"),
     }
     console.log(data)
     if (accountType == 'Gallery') {
@@ -304,7 +307,7 @@ router.post('/purchaseorders', async (req, res) => {
         accountType: accountType,
         status: "Pending",
         itemnumber: itemnumber,
-        date: Date.now(),
+        date: dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT"),
         totalcost: totalcost,
         itemscost: itemscost,
         purchaseditems: cartitems,
