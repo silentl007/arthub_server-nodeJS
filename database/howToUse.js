@@ -76,6 +76,7 @@ const UploadWork = {
         "userID": "9fdc565f-d4d0-48d6-a579-91c1a53eec77",
         "productID": "hhsgd-jjd79-nds",
         "accountType": "Gallery",
+        "email": "",
         "name": "Okpongu Tama",
         "product": "Dance of Death 2",
         "cost": 300,
@@ -117,7 +118,8 @@ const OrdersAdd = {
     type: 'POST',
     dataToSend : {
         "userID": "",
-        "status":"Pending", // default
+        "status": "Pending", // default
+        "accountType": "",
         "itemnumber": Number,
         "totalcost": Number,
         "itemscost": Number,

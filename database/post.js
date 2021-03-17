@@ -225,6 +225,7 @@ router.post('/uploadworks', async (req, res) => {
         productID: id_generator.v4(),
         name: req.body.name,
         accountType: req.body.accountType,
+        email: req.body.email,
         product: req.body.product,
         cost: req.body.cost,
         type: req.body.type,
@@ -235,6 +236,7 @@ router.post('/uploadworks', async (req, res) => {
         materials: req.body.materials,
         images: req.body.images,
     }
+    console.log(data)
     if (accountType == 'Gallery') {
         try {
             const query = await mongoModel.gallery.updateOne({ userID: userID }, { $push: { works: data } });
