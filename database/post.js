@@ -307,7 +307,7 @@ router.post('/cartadd/:userID/:accountType', async (req, res) => {
 
 router.post('/checkcart', async (req, res) => {
     const usercart = req.body.purchaseditems
-    // console.log(`user cart - ${usercart}`)
+    console.log(`user cart - ${usercart}`)
     for (var item in usercart) {
         console.log(`looped item - ${item}`)
         if (item.accountType == 'Gallery') {
