@@ -316,10 +316,8 @@ router.post('/checkcart', async (req, res) => {
         console.log(`looped item - ${usercart[i]}`)
         if (usercart[i].accountType == 'Gallery') {
             try {
-                const query = await mongoModel.gallery.findOne({ userID: usercart[i].userID })
+                const query = await mongoModel.gallery.findOne({ email: usercart[i].artistemail })
                 console.log('outside the if statement block')
-                console.log(`query works ${query.works}`)
-                console.log(`query works with number ${query.works[0]}`)
                 if (query != null) {
                     console.log('in the if statement block')
                     console.log(`query works ${query.works}`)
@@ -335,6 +333,8 @@ router.post('/checkcart', async (req, res) => {
                         break
                     }
                 } else {
+                    console.log('guess query returned null');
+                    console.log(`query data ${query}`)
                     res.status(404).json({ itemname: usercart[i].product })
                     break
                 }
@@ -345,7 +345,7 @@ router.post('/checkcart', async (req, res) => {
 
         } else {
             try {
-                const query = await mongoModel.freelancer.findOne({ userID: usercart[i].userID })
+                const query = await mongoModel.freelancer.findOne({ email: usercart[i].artistemail })
                 console.log('outside the if statement block')
                 // console.log(`query works with number ${query.works[0]}`)
                 if (query != null) {
@@ -365,6 +365,8 @@ router.post('/checkcart', async (req, res) => {
                         break
                     }
                 } else {
+                    console.log('guess query returned null');
+                    console.log(`query data ${query}`)
                     res.status(404).json({ itemname: usercart[i].product })
                     break
                 }
