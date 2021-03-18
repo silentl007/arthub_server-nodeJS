@@ -366,7 +366,7 @@ router.post('/checkcart', async (req, res) => {
                     }
                     console.log(`productIDs of artist -- ${productIDs}`)
                     console.log(`query productIDs of artist using -- ${usercart[i].productID}`)
-                    if (productIDs.includes(usercart[i].productID)) {
+                    if (productIDs.includes(usercart[i].productID) == true) {
                         console.log(`in the if statement productID is included block ${usercart[i].productID}`)
                         continue;
                     } else {
