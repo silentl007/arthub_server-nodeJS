@@ -40,7 +40,7 @@ router.post('/register', async (req, res) => {
 router.get('/activate/:token', async (req, res) => {
     const receivedToken = req.params.token;
     if (receivedToken) {
-        jwt.verify(receivedToken, process.env.TokenSecret, (err, decoded) => {
+        jwt.verify(receivedToken, process.env.TokenSecret, async (err, decoded) => {
             if (err) {
                 return res.status(401).json({ message: 'Expired token!' });
             } else {
