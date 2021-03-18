@@ -314,6 +314,8 @@ router.post('/checkcart', async (req, res) => {
     // console.log(`data.purchaseditems.purchaseditems - ${data.purchaseditems.purchaseditems}`)
     for (var i = 0; i < usercart.length; i++) {
         console.log(`looped item - ${usercart[i]}`)
+        console.log(`keys of looped item - ${Object.keys(usercart[i])}`)
+        console.log(`values of looped item - ${Object.values(usercart[i])}`)
         if (usercart[i].accountType == 'Gallery') {
             try {
                 const query = await mongoModel.gallery.findOne({ email: usercart[i].artistemail })
