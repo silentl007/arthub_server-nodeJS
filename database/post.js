@@ -366,14 +366,20 @@ router.post('/checkcart', async (req, res) => {
                     console.log(`user cart productID before loop -- ${usercart[i].productID}`)
                     for (var i = 0; i < query.works.length; i++) {
                         console.log('in the loop to push product IDs to productIDs block')
+                        
                         productIDs.push(query.works[i].productID)
+                        console.log(`productIDs in loop -- ${productIDs}`)
                     }
                     console.log('pushed usercart productID into productIDs array')
-                    console.log(`user cart using variable name -- ${usercartpID}`)
+                    
                     // console.log(`user cart productID after loop -- ${usercart[i].productID}`)
-                    console.log(`productIDs of artist -- ${productIDs}`)
+                    console.log(`productIDs after loop -- ${productIDs}`)
                     // console.log(`query productIDs of artist using -- ${usercart[i].productID}`)
-                    productIDs.push(usercartpID)
+                    // productIDs.push(usercartpID)
+                    console.log(`productIDs after pushing usercartpid -- ${productIDs}`)
+                    console.log(`usercartpID value -- ${usercartpID}`)
+                    console.log(`result of include method - ${productIDs.includes(usercartpID)}`)
+                    console.log('show after the include method')
                     // if (productIDs.includes(usercart[i].productID) == true) {
                     //     console.log(`in the if statement productID is included block ${usercart[i].productID}`)
                     //     continue;
