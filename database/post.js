@@ -307,41 +307,24 @@ router.post('/cartadd/:userID/:accountType', async (req, res) => {
 
 router.post('/checkcart', async (req, res) => {
     const usercart = req.body.purchaseditems
-    // console.log(`user cart - ${usercart}`)
-    // console.log(`just body - ${body}`)
-    // console.log(`data full body - ${data.purchaseditems}`)
-    // console.log(`data.purchaseditems - ${data.purchaseditems}`)
-    // console.log(`data.purchaseditems.purchaseditems - ${data.purchaseditems.purchaseditems}`)
     for (var i = 0; i < usercart.length; i++) {
-        console.log(`beginning of loop`)
-        console.log(`looped item - ${usercart[i]}`)
-        console.log(`keys of looped item - ${Object.keys(usercart[i])}`)
-        console.log(`values of looped item - ${Object.values(usercart[i])}`)
-        console.log(`usercart productID -- ${usercart[i].productID}`)
-        console.log(`usercart productID type -- ${typeof(usercart[i].productID)}`)
         var usercartpID = usercart[i].productID;
-        console.log(`usercart assigned variable -- ${usercartpID}`)
         if (usercart[i].accountType == 'Gallery') {
             try {
                 const query = await mongoModel.gallery.findOne({ email: usercart[i].artistemail })
-                console.log('outside the if statement block')
                 if (query != null) {
-                    console.log('in the if statement block')
-                    console.log(`query works ${query.works}`)
-                    console.log(`query works with number ${query.works[0]}`)
                     var productIDs = []
                     for (var i = 0; i < query.works.length; i++) {
                         productIDs.push(query.works[i].productID)
                     }
-                    if (productIDs.includes(usercart[i].productID)) {
+                    if (productIDs.includes(usercartpID == true)) {
                         continue;
                     } else {
                         res.status(404).json({ itemname: usercart[i].product })
                         break
                     }
                 } else {
-                    console.log('guess query returned null');
-                    console.log(`query data ${query}`)
+                    console.log('else from if statement');
                     res.status(404).json({ itemname: usercart[i].product })
                     break
                 }
@@ -351,49 +334,21 @@ router.post('/checkcart', async (req, res) => {
             }
 
         } else {
-            console.log(`in the else block`)
-            console.log(`user cart productID -- ${usercart[i].productID}`)
             try {
                 const query = await mongoModel.freelancer.findOne({ email: usercart[i].artistemail })
-                console.log('outside the if statement block')
-                // console.log(`query works with number ${query.works[0]}`)
                 if (query != null) {
-                    console.log('in the if statement block')
-                    // console.log(`query data ${query}`)
-                    // console.log(`query works ${query.works}`)
-                    // console.log(`query works with number ${query.works[0]}`)
                     var productIDs = []
-                    console.log(`user cart productID before loop -- ${usercart[i].productID}`)
                     for (var i = 0; i < query.works.length; i++) {
-                        console.log('in the loop to push product IDs to productIDs block')
-                        
                         productIDs.push(query.works[i].productID)
-                        console.log(`productIDs in loop -- ${productIDs}`)
                     }
-                    console.log('pushed usercart productID into productIDs array')
-                    
-                    // console.log(`user cart productID after loop -- ${usercart[i].productID}`)
-                    console.log(`productIDs after loop -- ${productIDs}`)
-                    // console.log(`query productIDs of artist using -- ${usercart[i].productID}`)
-                    // productIDs.push(usercartpID)
-                    
-                    console.log(`usercartpID value -- ${usercartpID}`)
-                    productIDs.push(usercartpID)
-                    console.log(`productIDs after pushing usercartpid -- ${productIDs}`)
-                    console.log(`result of include method - ${productIDs.includes(usercartpID)}`)
-                    console.log('show after the include method')
-                    if (productIDs.includes(usercartpID) == true){
-                        console.log('success nigga')
+                    if (productIDs.includes(usercartpID) == true) {
+                        continue;
+                    } else {
+                        res.status(404).json({ itemname: usercart[i].product })
+                        break;
                     }
-                    // if (productIDs.includes(usercart[i].productID) == true) {
-                    //     console.log(`in the if statement productID is included block ${usercart[i].productID}`)
-                    //     continue;
-                    // } else {
-                    //     res.status(404).json({ itemname: usercart[i].product })
-                    //     break
-                    // }
                 } else {
-                    console.log('guess query returned null');
+                    console.log('else from if statement');
                     res.status(404).json({ itemname: usercart[i].product })
                     break
                 }
