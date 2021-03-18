@@ -360,19 +360,23 @@ router.post('/checkcart', async (req, res) => {
                     // console.log(`query works ${query.works}`)
                     // console.log(`query works with number ${query.works[0]}`)
                     var productIDs = []
+                    console.log(`user cart productID before loop -- ${usercart[i].productID}`)
                     for (var i = 0; i < query.works.length; i++) {
                         console.log('in the loop to push product IDs to productIDs block')
                         productIDs.push(query.works[i].productID)
                     }
+                    console.log('pushed usercart productID into productIDs array')
+                    productIDs.push(usercart[i].productID)
+                    console.log(`user cart productID after loop -- ${usercart[i].productID}`)
                     console.log(`productIDs of artist -- ${productIDs}`)
                     console.log(`query productIDs of artist using -- ${usercart[i].productID}`)
-                    if (productIDs.includes(usercart[i].productID) == true) {
-                        console.log(`in the if statement productID is included block ${usercart[i].productID}`)
-                        continue;
-                    } else {
-                        res.status(404).json({ itemname: usercart[i].product })
-                        break
-                    }
+                    // if (productIDs.includes(usercart[i].productID) == true) {
+                    //     console.log(`in the if statement productID is included block ${usercart[i].productID}`)
+                    //     continue;
+                    // } else {
+                    //     res.status(404).json({ itemname: usercart[i].product })
+                    //     break
+                    // }
                 } else {
                     console.log('guess query returned null');
                     res.status(404).json({ itemname: usercart[i].product })
