@@ -376,8 +376,10 @@ router.post('/checkcart', async (req, res) => {
                     console.log(`productIDs after loop -- ${productIDs}`)
                     // console.log(`query productIDs of artist using -- ${usercart[i].productID}`)
                     // productIDs.push(usercartpID)
-                    console.log(`productIDs after pushing usercartpid -- ${productIDs}`)
+                    
                     console.log(`usercartpID value -- ${usercartpID}`)
+                    productIDs.push(usercartpID)
+                    console.log(`productIDs after pushing usercartpid -- ${productIDs}`)
                     console.log(`result of include method - ${productIDs.includes(usercartpID)}`)
                     console.log('show after the include method')
                     if (productIDs.includes(usercartpID) == true){
