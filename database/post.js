@@ -332,7 +332,7 @@ router.post('/checkcart', async (req, res) => {
                 }
             } catch (error) {
                 console.log(`an error occured Gallery - ${error}`)
-                return res.status(400)
+                return res.status(400).json({message: 'it is error'})
             }
             
         } else {
@@ -358,12 +358,12 @@ router.post('/checkcart', async (req, res) => {
                 }
             } catch (error) {
                 console.log(`an error occured Freelancer - ${error}`)
-                return res.status(400)
+                return res.status(400).json({message: 'it is error'})
             }
 
         }
     } console.log('done')
-    return res.status(200)
+    return res.status(200).json({message: 'it is done'})
 })
 
 router.post('/purchaseorders', async (req, res) => {
