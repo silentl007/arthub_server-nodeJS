@@ -380,6 +380,9 @@ router.post('/checkcart', async (req, res) => {
                     console.log(`usercartpID value -- ${usercartpID}`)
                     console.log(`result of include method - ${productIDs.includes(usercartpID)}`)
                     console.log('show after the include method')
+                    if (productIDs.includes(usercartpID) == true){
+                        console.log('success nigga')
+                    }
                     // if (productIDs.includes(usercart[i].productID) == true) {
                     //     console.log(`in the if statement productID is included block ${usercart[i].productID}`)
                     //     continue;
