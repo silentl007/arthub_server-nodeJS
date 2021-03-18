@@ -45,66 +45,76 @@ router.get('/activate/:token', async (req, res) => {
                 return res.status(401).json({ message: 'Expired token!' });
             } else {
                 const decodedToken = jwt.decode(receivedToken);
-                // logic to determine which collection to store the registered user based on accoutnt type
-                if (decodedToken.accountType == "Gallery") {
-                    const userEntry = new mongoModel.gallery({
-                        userID: id_generator.v4(),
-                        name: decodedToken.name,
-                        email: decodedToken.email,
-                        password: decodedToken.password,
-                        address: decodedToken.address,
-                        location: decodedToken.location,
-                        accountType: decodedToken.accountType,
-                        number: decodedToken.number,
-                    });
-                    userEntry.save((err) => {
-                        if (err) {
-                            res.status(400).json({ message: err })
-                        } else {
-                            res.status(200).json({ message: "Activation successful. You can login in!" })
-                        }
-                    })
-                } else if (decodedToken.accountType == "Freelancer") {
-                    const userEntry = new mongoModel.freelancer({
-                        userID: id_generator.v4(),
-                        name: decodedToken.name,
-                        email: decodedToken.email,
-                        password: decodedToken.password,
-                        address: decodedToken.address,
-                        location: decodedToken.location,
-                        accountType: decodedToken.accountType,
-                        number: decodedToken.number,
-                        avatar: decodedToken.avatar,
-                        aboutme: decodedToken.aboutme,
-                    });
-                    userEntry.save((err) => {
-                        if (err) {
-                            res.status(400).json({ message: err })
-                        } else {
-                            res.status(200).json({ message: "Activation successful. You can login in!" })
-                        }
-                    })
-                }
+                // logic to check if the user is already registered (using the link twice within five minutes will create another account)
+                const dataGallery = await mongoModel.gallery.findOne({ email: decodedToken.email });
+                const dataFreelance = await mongoModel.freelancer.findOne({ email: decodedToken.email });
+                const dataCustomer = await mongoModel.customer.findOne({ email: decodedToken.email });
+                // logic to find if email has been used to register in any of the categories
+                if (dataGallery != null) {
+                    return res.status(400).json({ message: "This user already exists!" })
+                } else if (dataFreelance != null) { return res.status(400).json({ message: "This user already exists!" }) }
+                else if (dataCustomer != null) { return res.status(400).json({ message: "This user already exists!" }) }
                 else {
-                    const userEntry = new mongoModel.customer({
-                        userID: id_generator.v4(),
-                        name: decodedToken.name,
-                        email: decodedToken.email,
-                        password: decodedToken.password,
-                        address: decodedToken.address,
-                        location: decodedToken.location,
-                        accountType: decodedToken.accountType,
-                        number: decodedToken.number,
-                    });
-                    userEntry.save((err) => {
-                        if (err) {
-                            res.status(400).json({ message: err })
-                        } else {
-                            res.status(200).json({ message: "Activation successful. You can login in!" })
-                        }
-                    })
+                    // logic to determine which collection to store the registered user based on accoutnt type
+                    if (decodedToken.accountType == "Gallery") {
+                        const userEntry = new mongoModel.gallery({
+                            userID: id_generator.v4(),
+                            name: decodedToken.name,
+                            email: decodedToken.email,
+                            password: decodedToken.password,
+                            address: decodedToken.address,
+                            location: decodedToken.location,
+                            accountType: decodedToken.accountType,
+                            number: decodedToken.number,
+                        });
+                        userEntry.save((err) => {
+                            if (err) {
+                                res.status(400).json({ message: err })
+                            } else {
+                                res.status(200).json({ message: "Activation successful. You can login in!" })
+                            }
+                        })
+                    } else if (decodedToken.accountType == "Freelancer") {
+                        const userEntry = new mongoModel.freelancer({
+                            userID: id_generator.v4(),
+                            name: decodedToken.name,
+                            email: decodedToken.email,
+                            password: decodedToken.password,
+                            address: decodedToken.address,
+                            location: decodedToken.location,
+                            accountType: decodedToken.accountType,
+                            number: decodedToken.number,
+                            avatar: decodedToken.avatar,
+                            aboutme: decodedToken.aboutme,
+                        });
+                        userEntry.save((err) => {
+                            if (err) {
+                                res.status(400).json({ message: err })
+                            } else {
+                                res.status(200).json({ message: "Activation successful. You can login in!" })
+                            }
+                        })
+                    }
+                    else {
+                        const userEntry = new mongoModel.customer({
+                            userID: id_generator.v4(),
+                            name: decodedToken.name,
+                            email: decodedToken.email,
+                            password: decodedToken.password,
+                            address: decodedToken.address,
+                            location: decodedToken.location,
+                            accountType: decodedToken.accountType,
+                            number: decodedToken.number,
+                        });
+                        userEntry.save((err) => {
+                            if (err) {
+                                res.status(400).json({ message: err })
+                            } else {
+                                res.status(200).json({ message: "Activation successful. You can login in!" })
+                            }
+                        })
+                    }
                 }
-
             }
         })
     }
