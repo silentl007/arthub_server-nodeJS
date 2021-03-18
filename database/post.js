@@ -306,7 +306,7 @@ router.post('/cartadd/:userID/:accountType', async (req, res) => {
 })
 
 router.post('/checkcart', async (req, res) => {
-    const usercart = req.body.purchaseditems
+    const usercart = req.body.test
     const body = req.body
     console.log(`user cart - ${usercart}`)
     console.log(`just body - ${body}`)
