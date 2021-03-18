@@ -320,7 +320,7 @@ router.post('/checkcart', async (req, res) => {
                 console.log('outside the if statement block')
                 console.log(`query works ${query.works}`)
                 console.log(`query works with number ${query.works[0]}`)
-                if (query.works != null) {
+                if (query != null) {
                     console.log('in the if statement block')
                     console.log(`query works ${query.works}`)
                     console.log(`query works with number ${query.works[0]}`)
@@ -347,16 +347,17 @@ router.post('/checkcart', async (req, res) => {
             try {
                 const query = await mongoModel.freelancer.findOne({ userID: usercart[i].userID })
                 console.log('outside the if statement block')
-                console.log(`query works ${query.works}`)
-                console.log(`query works with number ${query.works[0]}`)
-                if (query.works != null) {
+                // console.log(`query works with number ${query.works[0]}`)
+                if (query != null) {
                     console.log('in the if statement block')
+                    console.log(`query data ${query}`)
                     console.log(`query works ${query.works}`)
                     console.log(`query works with number ${query.works[0]}`)
                     var productIDs = []
                     for (var i = 0; i < query.works.length; i++) {
                         productIDs.push(query.works[i].productID)
                     }
+                    console.log(`productIDs data ${productIDs}`)
                     if (productIDs.includes(usercart[i].productID)) {
                         continue;
                     } else {
