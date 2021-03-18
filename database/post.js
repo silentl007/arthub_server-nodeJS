@@ -314,7 +314,9 @@ router.post('/checkcart', async (req, res) => {
     }
     console.log(`user cart - ${usercart}`)
     console.log(`just body - ${body}`)
-    console.log(`just data - ${data}`)
+    console.log(`data full body - ${data.purchaseditems}`)
+    console.log(`data.purchaseditems - ${data.purchaseditems}`)
+    console.log(`data.purchaseditems.purchaseditems - ${data.purchaseditems.purchaseditems}`)
     for (var item in usercart) {
         console.log(`looped item - ${item}`)
         if (item.accountType == 'Gallery') {
