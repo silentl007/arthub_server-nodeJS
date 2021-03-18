@@ -369,6 +369,7 @@ router.post('/checkcart', async (req, res) => {
                         productIDs.push(query.works[i].productID)
                     }
                     console.log('pushed usercart productID into productIDs array')
+                    console.log(`user cart using variable name -- ${usercartpID}`)
                     console.log(`user cart productID after loop -- ${usercart[i].productID}`)
                     console.log(`productIDs of artist -- ${productIDs}`)
                     console.log(`query productIDs of artist using -- ${usercart[i].productID}`)
