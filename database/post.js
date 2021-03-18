@@ -316,7 +316,7 @@ router.post('/checkcart', async (req, res) => {
         console.log(`looped item - ${usercart[i]}`)
         if (usercart[i].accountType == 'Gallery') {
             try {
-                const query = await mongoModel.gallery.findOne({ userID: item.userID })
+                const query = await mongoModel.gallery.findOne({ userID: usercart[i].userID })
                 if (query.works != null) {
                     var productIDs = []
                     for (var i = 0; i < query.works.length; i++) {
@@ -339,7 +339,7 @@ router.post('/checkcart', async (req, res) => {
 
         } else {
             try {
-                const query = await mongoModel.freelancer.findOne({ userID: item.userID })
+                const query = await mongoModel.freelancer.findOne({ userID: usercart[i].userID })
                 if (query.works != null) {
                     var productIDs = []
                     for (var i = 0; i < query.works.length; i++) {
