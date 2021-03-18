@@ -74,6 +74,8 @@ router.get('/activate/:token', async (req, res) => {
                         location: decodedToken.location,
                         accountType: decodedToken.accountType,
                         number: decodedToken.number,
+                        avatar: decodedToken.avatar,
+                        aboutme: decodedToken.aboutme,
                     });
                     userEntry.save((err) => {
                         if (err) {

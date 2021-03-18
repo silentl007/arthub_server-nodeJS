@@ -1,7 +1,7 @@
 // These are the routes and how to use them to send data and what will be received
 
 /** Routes completed so far
- * Register
+ * Register - implemented
  * Login - implemented
  * EditProfile - implemented
  * UploadWork - implemented
