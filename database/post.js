@@ -318,13 +318,15 @@ router.post('/checkcart', async (req, res) => {
                         productIDs.push(query.works[i].productID)
                     }
                     if (productIDs.includes(usercartpID == true)) {
+                        console.log('continue - Gallery')
                         continue;
                     } else {
+                        console.log('breaks - Gallery')
                         res.status(404).json({ itemname: usercart[i].product })
                         break
                     }
                 } else {
-                    console.log('else from if statement');
+                    console.log('else from if statement - Gallery');
                     res.status(404).json({ itemname: usercart[i].product })
                     break
                 }
@@ -332,7 +334,7 @@ router.post('/checkcart', async (req, res) => {
                 console.log(`an error occured Gallery - ${error}`)
                 return res.status(400)
             }
-
+            
         } else {
             try {
                 const query = await mongoModel.freelancer.findOne({ email: usercart[i].artistemail })
@@ -342,15 +344,15 @@ router.post('/checkcart', async (req, res) => {
                         productIDs.push(query.works[i].productID)
                     }
                     if (productIDs.includes(usercartpID) == true) {
-                        console.log('continue')
+                        console.log('continue - Freelancer')
                         continue;
                     } else {
                         res.status(404).json({ itemname: usercart[i].product })
-                        console.log('breaks')
+                        console.log('breaks - Freelancer')
                         break;
                     }
                 } else {
-                    console.log('else from if statement');
+                    console.log('else from if statement - Freelancer');
                     res.status(404).json({ itemname: usercart[i].product })
                     break
                 }
@@ -360,7 +362,8 @@ router.post('/checkcart', async (req, res) => {
             }
 
         }
-    } return res.status(200)
+    } console.log('done')
+    return res.status(200)
 })
 
 router.post('/purchaseorders', async (req, res) => {
