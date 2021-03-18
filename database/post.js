@@ -317,19 +317,25 @@ router.post('/checkcart', async (req, res) => {
         if (usercart[i].accountType == 'Gallery') {
             try {
                 const query = await mongoModel.gallery.findOne({ userID: usercart[i].userID })
+                console.log('outside the if statement block')
+                console.log(`query works ${query.works}`)
+                console.log(`query works with number ${query.works[0]}`)
                 if (query.works != null) {
+                    console.log('in the if statement block')
+                    console.log(`query works ${query.works}`)
+                    console.log(`query works with number ${query.works[0]}`)
                     var productIDs = []
                     for (var i = 0; i < query.works.length; i++) {
                         productIDs.push(query.works[i].productID)
                     }
-                    if (productIDs.includes(query.works[i].productID)) {
+                    if (productIDs.includes(usercart[i].productID)) {
                         continue;
                     } else {
-                        res.status(404).json({ itemname: query.works[i].product })
+                        res.status(404).json({ itemname: usercart[i].product })
                         break
                     }
                 } else {
-                    res.status(404).json({ itemname: query.works[i].product })
+                    res.status(404).json({ itemname: usercart[i].product })
                     break
                 }
             } catch (error) {
@@ -340,19 +346,25 @@ router.post('/checkcart', async (req, res) => {
         } else {
             try {
                 const query = await mongoModel.freelancer.findOne({ userID: usercart[i].userID })
+                console.log('outside the if statement block')
+                console.log(`query works ${query.works}`)
+                console.log(`query works with number ${query.works[0]}`)
                 if (query.works != null) {
+                    console.log('in the if statement block')
+                    console.log(`query works ${query.works}`)
+                    console.log(`query works with number ${query.works[0]}`)
                     var productIDs = []
                     for (var i = 0; i < query.works.length; i++) {
                         productIDs.push(query.works[i].productID)
                     }
-                    if (productIDs.includes(query.works[i].productID)) {
+                    if (productIDs.includes(usercart[i].productID)) {
                         continue;
                     } else {
-                        res.status(404).json({ itemname: query.works[i].product })
+                        res.status(404).json({ itemname: usercart[i].product })
                         break
                     }
                 } else {
-                    res.status(404).json({ itemname: query.works[i].product })
+                    res.status(404).json({ itemname: usercart[i].product })
                     break
                 }
             } catch (error) {
