@@ -308,6 +308,7 @@ router.post('/cartadd/:userID/:accountType', async (req, res) => {
 router.post('/checkcart', async (req, res) => {
     const usercart = req.body.purchaseditems
     for (var item in usercart) {
+        console.log(`looped item - ${item}`)
         if (item.accountType == 'Gallery') {
             try {
                 const query = await mongoModel.gallery.findOne({ userID: item.userID })
@@ -327,7 +328,7 @@ router.post('/checkcart', async (req, res) => {
                     break
                 }
             } catch (error) {
-                console.log(`an error occured ${error}`)
+                console.log(`an error occured Gallery - ${error}`)
                 return res.status(400)
             }
 
@@ -350,7 +351,7 @@ router.post('/checkcart', async (req, res) => {
                     break
                 }
             } catch (error) {
-                console.log(`an error occured ${error}`)
+                console.log(`an error occured Freelancer - ${error}`)
                 return res.status(400)
             }
 
