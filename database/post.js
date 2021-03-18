@@ -306,35 +306,30 @@ router.post('/cartadd/:userID/:accountType', async (req, res) => {
 })
 
 router.post('/checkcart', async (req, res) => {
-    const usercart = req.body.test
-    var body = req.body.purchaseditems
-    var data = {
-        purchaseditems: req.body.purchaseditems,
-        test : req.body.test
-    }
-    console.log(`user cart - ${usercart}`)
-    console.log(`just body - ${body}`)
-    console.log(`data full body - ${data.purchaseditems}`)
-    console.log(`data.purchaseditems - ${data.purchaseditems}`)
-    console.log(`data.purchaseditems.purchaseditems - ${data.purchaseditems.purchaseditems}`)
-    for (var item in usercart) {
-        console.log(`looped item - ${item}`)
-        if (item.accountType == 'Gallery') {
+    const usercart = req.body.purchaseditems
+    // console.log(`user cart - ${usercart}`)
+    // console.log(`just body - ${body}`)
+    // console.log(`data full body - ${data.purchaseditems}`)
+    // console.log(`data.purchaseditems - ${data.purchaseditems}`)
+    // console.log(`data.purchaseditems.purchaseditems - ${data.purchaseditems.purchaseditems}`)
+    for (var i = 0; i < usercart.length; i++) {
+        console.log(`looped item - ${usercart[i]}`)
+        if (usercart[i].accountType == 'Gallery') {
             try {
                 const query = await mongoModel.gallery.findOne({ userID: item.userID })
                 if (query.works != null) {
                     var productIDs = []
-                    for (var qitems in query.works) {
-                        productIDs.push(qitems.productID)
+                    for (var i = 0; i < query.works.length; i++) {
+                        productIDs.push(query.works[i].productID)
                     }
-                    if (productIDs.includes(item.productID)) {
+                    if (productIDs.includes(query.works[i].productID)) {
                         continue;
                     } else {
-                        res.status(404).json({ itemname: item.product })
+                        res.status(404).json({ itemname: query.works[i].product })
                         break
                     }
                 } else {
-                    res.status(404).json({ itemname: item.product })
+                    res.status(404).json({ itemname: query.works[i].product })
                     break
                 }
             } catch (error) {
@@ -347,17 +342,17 @@ router.post('/checkcart', async (req, res) => {
                 const query = await mongoModel.freelancer.findOne({ userID: item.userID })
                 if (query.works != null) {
                     var productIDs = []
-                    for (var qitems in query.works) {
-                        productIDs.push(qitems.productID)
+                    for (var i = 0; i < query.works.length; i++) {
+                        productIDs.push(query.works[i].productID)
                     }
-                    if (productIDs.includes(item.productID)) {
+                    if (productIDs.includes(query.works[i].productID)) {
                         continue;
                     } else {
-                        res.status(404).json({ itemname: item.product })
+                        res.status(404).json({ itemname: query.works[i].product })
                         break
                     }
                 } else {
-                    res.status(404).json({ itemname: item.product })
+                    res.status(404).json({ itemname: query.works[i].product })
                     break
                 }
             } catch (error) {
