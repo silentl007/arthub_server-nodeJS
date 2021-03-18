@@ -313,9 +313,11 @@ router.post('/checkcart', async (req, res) => {
     // console.log(`data.purchaseditems - ${data.purchaseditems}`)
     // console.log(`data.purchaseditems.purchaseditems - ${data.purchaseditems.purchaseditems}`)
     for (var i = 0; i < usercart.length; i++) {
+        console.log(`beginning of loop`)
         console.log(`looped item - ${usercart[i]}`)
         console.log(`keys of looped item - ${Object.keys(usercart[i])}`)
         console.log(`values of looped item - ${Object.values(usercart[i])}`)
+        console.log(`usercart productID -- ${usercart[i].productID}`)
         if (usercart[i].accountType == 'Gallery') {
             try {
                 const query = await mongoModel.gallery.findOne({ email: usercart[i].artistemail })
@@ -346,6 +348,8 @@ router.post('/checkcart', async (req, res) => {
             }
 
         } else {
+            console.log(`in the else block`)
+            console.log(`user cart productID -- ${usercart[i].productID}`)
             try {
                 const query = await mongoModel.freelancer.findOne({ email: usercart[i].artistemail })
                 console.log('outside the if statement block')
