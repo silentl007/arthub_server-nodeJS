@@ -342,9 +342,11 @@ router.post('/checkcart', async (req, res) => {
                         productIDs.push(query.works[i].productID)
                     }
                     if (productIDs.includes(usercartpID) == true) {
+                        console.log('continue')
                         continue;
                     } else {
                         res.status(404).json({ itemname: usercart[i].product })
+                        console.log('breaks')
                         break;
                     }
                 } else {
