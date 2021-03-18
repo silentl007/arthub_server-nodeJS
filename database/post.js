@@ -370,10 +370,10 @@ router.post('/checkcart', async (req, res) => {
                     }
                     console.log('pushed usercart productID into productIDs array')
                     console.log(`user cart using variable name -- ${usercartpID}`)
-                    console.log(`user cart productID after loop -- ${usercart[i].productID}`)
+                    // console.log(`user cart productID after loop -- ${usercart[i].productID}`)
                     console.log(`productIDs of artist -- ${productIDs}`)
-                    console.log(`query productIDs of artist using -- ${usercart[i].productID}`)
-                    // productIDs.push(usercart[i].productID)
+                    // console.log(`query productIDs of artist using -- ${usercart[i].productID}`)
+                    productIDs.push(usercartpID)
                     // if (productIDs.includes(usercart[i].productID) == true) {
                     //     console.log(`in the if statement productID is included block ${usercart[i].productID}`)
                     //     continue;
