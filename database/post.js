@@ -332,22 +332,28 @@ router.post('/checkcart', async (req, res) => {
             }
 
         } else {
-            const query = await mongoModel.freelancer.findOne({ userID: item.userID })
-            if (query.works != null) {
-                var productIDs = []
-                for (var qitems in query.works) {
-                    productIDs.push(qitems.productID)
-                }
-                if (productIDs.includes(item.productID)) {
-                    continue;
+            try {
+                const query = await mongoModel.freelancer.findOne({ userID: item.userID })
+                if (query.works != null) {
+                    var productIDs = []
+                    for (var qitems in query.works) {
+                        productIDs.push(qitems.productID)
+                    }
+                    if (productIDs.includes(item.productID)) {
+                        continue;
+                    } else {
+                        res.status(404).json({ itemname: item.product })
+                        break
+                    }
                 } else {
                     res.status(404).json({ itemname: item.product })
                     break
                 }
-            } else {
-                res.status(404).json({ itemname: item.product })
-                break
+            } catch (error) {
+                console.log(`an error occured ${error}`)
+                return res.status(400)
             }
+
         }
     } return res.status(200)
 })
