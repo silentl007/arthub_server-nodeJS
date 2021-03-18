@@ -318,6 +318,9 @@ router.post('/checkcart', async (req, res) => {
         console.log(`keys of looped item - ${Object.keys(usercart[i])}`)
         console.log(`values of looped item - ${Object.values(usercart[i])}`)
         console.log(`usercart productID -- ${usercart[i].productID}`)
+        console.log(`usercart productID type -- ${typeof(usercart[i].productID)}`)
+        var usercartpID = usercart[i].productID;
+        console.log(`usercart assigned variable -- ${usercartpID}`)
         if (usercart[i].accountType == 'Gallery') {
             try {
                 const query = await mongoModel.gallery.findOne({ email: usercart[i].artistemail })
@@ -366,7 +369,7 @@ router.post('/checkcart', async (req, res) => {
                         productIDs.push(query.works[i].productID)
                     }
                     console.log('pushed usercart productID into productIDs array')
-                    productIDs.push(usercart[i].productID)
+                    productIDs.push(usercartpID)
                     console.log(`user cart productID after loop -- ${usercart[i].productID}`)
                     console.log(`productIDs of artist -- ${productIDs}`)
                     console.log(`query productIDs of artist using -- ${usercart[i].productID}`)
