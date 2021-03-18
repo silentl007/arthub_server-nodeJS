@@ -305,26 +305,78 @@ router.post('/cartadd/:userID/:accountType', async (req, res) => {
 
 })
 
+router.post('/checkcart', async (req, res) => {
+    const usercart = req.body.purchaseditems
+    for (var item in usercart) {
+        if (item.accountType == 'Gallery') {
+            try {
+                const query = await mongoModel.gallery.findOne({ userID: item.userID })
+                if (query.works != null) {
+                    var productIDs = []
+                    for (var qitems in query.works) {
+                        productIDs.push(qitems.productID)
+                    }
+                    if (productIDs.includes(item.productID)) {
+                        continue;
+                    } else {
+                        res.status(404).json({ itemname: item.product })
+                        break
+                    }
+                } else {
+                    res.status(404).json({ itemname: item.product })
+                    break
+                }
+            } catch (error) {
+                console.log(`an error occured ${error}`)
+                return res.status(400)
+            }
+
+        } else {
+            const query = await mongoModel.freelancer.findOne({ userID: item.userID })
+            if (query.works != null) {
+                var productIDs = []
+                for (var qitems in query.works) {
+                    productIDs.push(qitems.productID)
+                }
+                if (productIDs.includes(item.productID)) {
+                    continue;
+                } else {
+                    res.status(404).json({ itemname: item.product })
+                    break
+                }
+            } else {
+                res.status(404).json({ itemname: item.product })
+                break
+            }
+        }
+    } return res.status(200)
+})
+
 router.post('/purchaseorders', async (req, res) => {
-    const cartitems = req.body.cartitems;
+    const purchaseditems = req.body.purchaseditems;
     const userID = req.body.userID;
     const accountType = req.body.accountType
     const itemscost = req.body.itemscost
     const totalcost = req.body.totalcost
     const itemnumber = req.body.itemnumber
+    const deliveryAddress = req.body.deliveryAddress
     const body = {
         orderID: id_generator.v4(),
         userID: userID,
         accountType: accountType,
         status: "Pending",
         itemnumber: itemnumber,
-        date: dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT"),
+        dateOrdered: dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT"),
+        deliveryAddress: deliveryAddress,
+        date: Date.now,
         totalcost: totalcost,
         itemscost: itemscost,
-        purchaseditems: cartitems,
+        purchaseditems: purchaseditems,
     }
     if (accountType == 'Gallery') {
+        const resetcart = [];
         try {
+            const reset = await mongoModel.gallery.findOneAndReplace({ userID: userID }, { cart: resetcart });
             const query = await mongoModel.gallery.updateOne({ userID: userID }, { $push: { orders: body } });
             return res.status(200)
         } catch (error) {
