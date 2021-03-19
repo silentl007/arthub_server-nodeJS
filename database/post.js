@@ -372,6 +372,7 @@ router.post('/checkcart', async (req, res) => {
 
         }
     } console.log('done')
+    continue;
     return res.status(200).json({ message: 'it is done' })
 })
 
