@@ -338,7 +338,7 @@ router.post('/checkcart', async (req, res) => {
     } console.log('done')
     if (result == 'break') {
         console.log('loop was broken')
-        return res.status(404).json({ itemname: productname })
+        return res.status(404).json({ itemname: 'productname' })
     }  return res.status(200).json({ itemname: 'success' })
 })
 
