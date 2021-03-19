@@ -309,7 +309,6 @@ router.post('/checkcart', async (req, res) => {
     var result;
     const usercart = req.body.purchaseditems
     for (var i = 0; i < usercart.length; i++) {
-        console.log(`the normal length of the cart is ${usercart.length}`)
         console.log(`current iteration ${i}`)
         let productID = usercart[i].productID;
         let productname = usercart[i].product
@@ -337,11 +336,12 @@ router.post('/checkcart', async (req, res) => {
             }
         }
     } console.log('done')
-    if (result == 'break') { 
+    if (result == 'break') {
         console.log('loop was broken')
     } else {
         console.log('loop was completed')
-        return res.status(200)
+        res.status(200).json({ itemname: 'success' })
+        break;
     }
 })
 
