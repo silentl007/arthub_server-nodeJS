@@ -307,8 +307,9 @@ router.post('/cartadd/:userID/:accountType', async (req, res) => {
 
 router.post('/checkcart', async (req, res) => {
     const usercart = req.body.purchaseditems
-    for (var i = 0; i <= usercart.length; i++) {
-        console.log(`the length of the cart is ${usercart.length}`)
+    for (var i = 0; i < usercart.length; i++) {
+        console.log(`the normal length of the cart is ${usercart.length}`)
+        console.log(`the zero index length of the cart is ${usercart.length - 1}`)
         console.log(`current iteration ${i}`)
         let productID = usercart[i].productID;
         let productname = usercart[i].product
