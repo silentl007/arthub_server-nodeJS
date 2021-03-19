@@ -316,7 +316,7 @@ router.post('/checkcart', async (req, res) => {
         let artistemail = usercart[i].artistemail
         let accountType = usercart[i].accountType
         if (accountType == 'Gallery') {
-            var productIDs = await looper(accountType, artistemail);
+            var productIDs = await looper(accountType, artistemail, res);
             if (productIDs.includes(productID) == true) {
                 console.log('continue - Gallery')
             } else {
@@ -345,16 +345,14 @@ router.post('/checkcart', async (req, res) => {
     }
 })
 
-async function looper(accountType, artistemail) {
+async function looper(accountType, artistemail, res) {
     if (accountType == 'Gallery') {
         console.log(`At gallery`)
         try {
             var productIDs = []
             const query = await mongoModel.gallery.findOne({ email: artistemail })
             if (query != null) {
-                console.log(`check for this productID - ${productID}`)
                 for (var i = 0; i < query.works.length; i++) {
-                    console.log(`The work ${query.works[i].product} of artist ${artistemail} with productID ${query.works[i].productID}`)
                     productIDs.push(query.works[i].productID)
                 }
             } return productIDs;
@@ -368,9 +366,7 @@ async function looper(accountType, artistemail) {
             var productIDs = []
             const query = await mongoModel.freelancer.findOne({ email: artistemail })
             if (query != null) {
-                console.log(`check for this productID - ${productID}`)
                 for (var i = 0; i < query.works.length; i++) {
-                    console.log(`The work ${query.works[i].product} of artist ${artistemail} with productID ${query.works[i].productID}`)
                     productIDs.push(query.works[i].productID)
                 }
             } return productIDs;
