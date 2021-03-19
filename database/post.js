@@ -316,6 +316,8 @@ router.post('/checkcart', async (req, res) => {
             try {
                 const query = await mongoModel.gallery.findOne({ email: artistemail })
                 if (query != null) {
+                    console.log(`The works of artist ${artistemail} - ${query.works}`)
+                    console.log(`check for this productID - ${productID}`)
                     var productIDs = []
                     for (var i = 0; i < query.works.length; i++) {
                         productIDs.push(query.works[i].productID)
@@ -342,6 +344,8 @@ router.post('/checkcart', async (req, res) => {
             try {
                 const query = await mongoModel.freelancer.findOne({ email: artistemail })
                 if (query != null) {
+                    console.log(`The works of artist ${artistemail} - ${query.works}`)
+                    console.log(`check for this productID - ${productID}`)
                     var productIDs = []
                     for (var i = 0; i < query.works.length; i++) {
                         productIDs.push(query.works[i].productID)
