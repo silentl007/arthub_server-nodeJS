@@ -316,10 +316,10 @@ router.post('/checkcart', async (req, res) => {
             try {
                 const query = await mongoModel.gallery.findOne({ email: artistemail })
                 if (query != null) {
-                    console.log(`The works of artist ${artistemail} - ${query.works}`)
                     console.log(`check for this productID - ${productID}`)
                     var productIDs = []
                     for (var i = 0; i < query.works.length; i++) {
+                        console.log(`The work ${query.works[i].product} of artist ${artistemail} with productID ${query.works[i].productID}`)
                         productIDs.push(query.works[i].productID)
                     }
                     if (productIDs.includes(productID) == true) {
@@ -337,17 +337,17 @@ router.post('/checkcart', async (req, res) => {
                 }
             } catch (error) {
                 console.log(`an error occured Gallery - ${error}`)
-                return res.status(400).json({message: 'it is error'})
+                return res.status(400).json({ message: 'it is error' })
             }
-            
+
         } else {
             try {
                 const query = await mongoModel.freelancer.findOne({ email: artistemail })
                 if (query != null) {
-                    console.log(`The works of artist ${artistemail} - ${query.works}`)
                     console.log(`check for this productID - ${productID}`)
                     var productIDs = []
                     for (var i = 0; i < query.works.length; i++) {
+                        console.log(`The work ${query.works[i].product} of artistemail ${artistemail} with productID ${query.works[i].productID}`)
                         productIDs.push(query.works[i].productID)
                     }
                     if (productIDs.includes(productID) == true) {
@@ -365,12 +365,12 @@ router.post('/checkcart', async (req, res) => {
                 }
             } catch (error) {
                 console.log(`an error occured Freelancer - ${error}`)
-                return res.status(400).json({message: 'it is error'})
+                return res.status(400).json({ message: 'it is error' })
             }
 
         }
     } console.log('done')
-    return res.status(200).json({message: 'it is done'})
+    return res.status(200).json({ message: 'it is done' })
 })
 
 router.post('/purchaseorders', async (req, res) => {
