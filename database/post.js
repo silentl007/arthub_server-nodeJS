@@ -328,9 +328,9 @@ router.post('/checkcart', async (req, res) => {
         } else {
             var productIDs = await looper(accountType, artistemail);
             if (productIDs.includes(productID) == true) {
-                console.log('continue - Gallery')
+                console.log('continue - Freelancer')
             } else {
-                console.log('breaks - Gallery')
+                console.log('breaks - Freelancer')
                 res.status(404).json({ itemname: productname })
                 result = 'break';
                 break;
