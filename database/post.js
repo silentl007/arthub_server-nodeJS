@@ -308,26 +308,29 @@ router.post('/cartadd/:userID/:accountType', async (req, res) => {
 router.post('/checkcart', async (req, res) => {
     const usercart = req.body.purchaseditems
     for (var i = 0; i < usercart.length; i++) {
-        var usercartpID = usercart[i].productID;
+        console.log(`current iteration ${i}`)
+        let productID = usercart[i].productID;
+        let productname = usercart[i].product
+        let artistemail = usercart[i].artistemail
         if (usercart[i].accountType == 'Gallery') {
             try {
-                const query = await mongoModel.gallery.findOne({ email: usercart[i].artistemail })
+                const query = await mongoModel.gallery.findOne({ email: artistemail })
                 if (query != null) {
                     var productIDs = []
                     for (var i = 0; i < query.works.length; i++) {
                         productIDs.push(query.works[i].productID)
                     }
-                    if (productIDs.includes(usercartpID == true)) {
+                    if (productIDs.includes(productID) == true) {
                         console.log('continue - Gallery')
                         continue;
                     } else {
                         console.log('breaks - Gallery')
-                        res.status(404).json({ itemname: usercart[i].product })
+                        res.status(404).json({ itemname: productname })
                         break
                     }
                 } else {
                     console.log('else from if statement - Gallery');
-                    res.status(404).json({ itemname: usercart[i].product })
+                    res.status(404).json({ itemname: productname })
                     break
                 }
             } catch (error) {
@@ -337,23 +340,23 @@ router.post('/checkcart', async (req, res) => {
             
         } else {
             try {
-                const query = await mongoModel.freelancer.findOne({ email: usercart[i].artistemail })
+                const query = await mongoModel.freelancer.findOne({ email: artistemail })
                 if (query != null) {
                     var productIDs = []
                     for (var i = 0; i < query.works.length; i++) {
                         productIDs.push(query.works[i].productID)
                     }
-                    if (productIDs.includes(usercartpID) == true) {
+                    if (productIDs.includes(productID) == true) {
                         console.log('continue - Freelancer')
                         continue;
                     } else {
-                        res.status(404).json({ itemname: usercart[i].product })
+                        res.status(404).json({ itemname: productname })
                         console.log('breaks - Freelancer')
                         break;
                     }
                 } else {
                     console.log('else from if statement - Freelancer');
-                    res.status(404).json({ itemname: usercart[i].product })
+                    res.status(404).json({ itemname: productname })
                     break
                 }
             } catch (error) {
