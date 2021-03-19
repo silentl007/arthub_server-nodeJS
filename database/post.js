@@ -307,6 +307,7 @@ router.post('/cartadd/:userID/:accountType', async (req, res) => {
 
 router.post('/checkcart', async (req, res) => {
     var result;
+    var unavailable;
     const usercart = req.body.purchaseditems
     for (var i = 0; i < usercart.length; i++) {
         console.log(`current iteration ${i}`)
@@ -332,13 +333,14 @@ router.post('/checkcart', async (req, res) => {
                 console.log('breaks - Freelancer')
                 // res.status(404).json({ itemname: productname })
                 result = 'break';
+                unavailable = productname;
                 break;
             }
         }
     } console.log('done')
     if (result == 'break') {
         console.log('loop was broken')
-        return res.status(404).json({ itemname: 'productname' })
+        return res.status(404).json({ itemname: unavailable })
     }  return res.status(200).json({ itemname: 'success' })
 })
 
