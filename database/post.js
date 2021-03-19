@@ -338,11 +338,7 @@ router.post('/checkcart', async (req, res) => {
     } console.log('done')
     if (result == 'break') {
         console.log('loop was broken')
-    } else {
-        console.log('loop was completed')
-        res.status(200).json({ itemname: 'success' })
-        break;
-    }
+    }  return res.status(200).json({ itemname: 'success' })
 })
 
 async function looper(accountType, artistemail, res) {
