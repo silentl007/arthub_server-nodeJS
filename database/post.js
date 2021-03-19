@@ -306,75 +306,80 @@ router.post('/cartadd/:userID/:accountType', async (req, res) => {
 })
 
 router.post('/checkcart', async (req, res) => {
+    var result;
     const usercart = req.body.purchaseditems
     for (var i = 0; i < usercart.length; i++) {
         console.log(`the normal length of the cart is ${usercart.length}`)
-        console.log(`the zero index length of the cart is ${usercart.length - 1}`)
         console.log(`current iteration ${i}`)
         let productID = usercart[i].productID;
         let productname = usercart[i].product
         let artistemail = usercart[i].artistemail
-        if (usercart[i].accountType == 'Gallery') {
-            try {
-                const query = await mongoModel.gallery.findOne({ email: artistemail })
-                if (query != null) {
-                    console.log(`check for this productID - ${productID}`)
-                    var productIDs = []
-                    for (var i = 0; i < query.works.length; i++) {
-                        console.log(`The work ${query.works[i].product} of artist ${artistemail} with productID ${query.works[i].productID}`)
-                        productIDs.push(query.works[i].productID)
-                    }
-                    if (productIDs.includes(productID) == true) {
-                        console.log('continue - Gallery')
-                        continue;
-                    } else {
-                        console.log('breaks - Gallery')
-                        res.status(404).json({ itemname: productname })
-                        break
-                    }
-                } else {
-                    console.log('else from if statement - Gallery');
-                    res.status(404).json({ itemname: productname })
-                    break
-                }
-            } catch (error) {
-                console.log(`an error occured Gallery - ${error}`)
-                return res.status(400).json({ message: 'it is error' })
+        let accountType = usercart[i].accountType
+        if (accountType == 'Gallery') {
+            var productIDs = await looper(accountType, artistemail);
+            if (productIDs.includes(productID) == true) {
+                console.log('continue - Gallery')
+            } else {
+                console.log('breaks - Gallery')
+                res.status(404).json({ itemname: productname })
+                break;
             }
 
         } else {
-            try {
-                const query = await mongoModel.freelancer.findOne({ email: artistemail })
-                if (query != null) {
-                    console.log(`check for this productID - ${productID}`)
-                    var productIDs = []
-                    for (var i = 0; i < query.works.length; i++) {
-                        console.log(`The work ${query.works[i].product} of artistemail ${artistemail} with productID ${query.works[i].productID}`)
-                        productIDs.push(query.works[i].productID)
-                    }
-                    if (productIDs.includes(productID) == true) {
-                        console.log('continue - Freelancer')
-                        continue;
-                    } else {
-                        res.status(404).json({ itemname: productname })
-                        console.log('breaks - Freelancer')
-                        break;
-                    }
-                } else {
-                    console.log('else from if statement - Freelancer');
-                    res.status(404).json({ itemname: productname })
-                    break
-                }
-            } catch (error) {
-                console.log(`an error occured Freelancer - ${error}`)
-                return res.status(400).json({ message: 'it is error' })
+            var productIDs = await looper(accountType, artistemail);
+            if (productIDs.includes(productID) == true) {
+                console.log('continue - Gallery')
+            } else {
+                console.log('breaks - Gallery')
+                res.status(404).json({ itemname: productname })
+                result = 'break';
+                break;
             }
-
         }
     } console.log('done')
-    continue;
-    return res.status(200).json({ message: 'it is done' })
+    if (result == 'break') { 
+        console.log('loop was broken')
+    } else {
+        console.log('loop was completed')
+        return res.status(200)
+    }
 })
+
+async function looper(accountType, artistemail) {
+    if (accountType == 'Gallery') {
+        console.log(`At gallery`)
+        try {
+            var productIDs = []
+            const query = await mongoModel.gallery.findOne({ email: artistemail })
+            if (query != null) {
+                console.log(`check for this productID - ${productID}`)
+                for (var i = 0; i < query.works.length; i++) {
+                    console.log(`The work ${query.works[i].product} of artist ${artistemail} with productID ${query.works[i].productID}`)
+                    productIDs.push(query.works[i].productID)
+                }
+            } return productIDs;
+        } catch (error) {
+            console.log(`an error occured Gallery - ${error}`)
+            return res.status(400).json({ message: 'it is error' })
+        }
+    } else {
+        console.log(`At freelancer`)
+        try {
+            var productIDs = []
+            const query = await mongoModel.freelancer.findOne({ email: artistemail })
+            if (query != null) {
+                console.log(`check for this productID - ${productID}`)
+                for (var i = 0; i < query.works.length; i++) {
+                    console.log(`The work ${query.works[i].product} of artist ${artistemail} with productID ${query.works[i].productID}`)
+                    productIDs.push(query.works[i].productID)
+                }
+            } return productIDs;
+        } catch (error) {
+            console.log(`an error occured Freelancer - ${error}`)
+            return res.status(400).json({ message: 'it is error' })
+        }
+    }
+}
 
 router.post('/purchaseorders', async (req, res) => {
     const purchaseditems = req.body.purchaseditems;
