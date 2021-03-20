@@ -382,6 +382,7 @@ async function looper(accountType, artistemail, res) {
 
 
 router.post('/purchaseorders', async (req, res) => {
+    const resetcart = [];
     const useremail = req.body.email
     const username = req.body.name
     const purchaseditems = req.body.purchaseditems;
@@ -408,7 +409,6 @@ router.post('/purchaseorders', async (req, res) => {
     // add body to purchases collection in the db
     to_app_purchase_collection(username, body, res)
     if (accountType == 'Gallery') {
-        const resetcart = [];
         try {
             const reset_cart = await mongoModel.gallery.updateOne({ userID: userID }, { $set: { cart: resetcart } });
             const orders_add = await mongoModel.gallery.updateOne({ userID: userID }, { $push: { orders: body } });
