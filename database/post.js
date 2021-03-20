@@ -380,7 +380,7 @@ async function looper(accountType, artistemail, res) {
     }
 }
 
-
+// confirm purchase orders and its functions
 router.post('/purchaseorders', async (req, res) => {
     const resetcart = [];
     const useremail = req.body.email
