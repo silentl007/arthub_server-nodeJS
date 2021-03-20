@@ -102,10 +102,10 @@ class EmailSender {
         transporter.sendMail(emailBody, async (err, data) => {
             if (err) {
                 console.log(err);
-                return res.status(400).json({ message: 'Email was not sent! Check console' });
+                // return res.status(400).json({ message: 'Email was not sent! Check console' });
             } else {
                 console.log('Success!', data)
-                return res.status(200).json({ message: 'Email has been sent!' });
+                // return res.status(200).json({ message: 'Email has been sent!' });
             }
         })
     }
@@ -150,10 +150,10 @@ class EmailSender {
         transporter.sendMail(emailBody, async (err, data) => {
             if (err) {
                 console.log(err);
-                return res.status(400).json({ message: 'Email was not sent! Check console' });
+                // return res.status(400).json({ message: 'Email was not sent! Check console' });
             } else {
                 console.log('Success!', data)
-                return res.status(200).json({ message: 'Email has been sent!' });
+                // return res.status(200).json({ message: 'Email has been sent!' });
             }
         })
     }

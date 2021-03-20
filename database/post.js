@@ -406,7 +406,7 @@ router.post('/purchaseorders', async (req, res) => {
         purchaseditems: purchaseditems,
     }
     // add body to purchases collection in the db
-    to_app_purchase_collection(body, res)
+    to_app_purchase_collection(username, body, res)
     if (accountType == 'Gallery') {
         const resetcart = [];
         try {
@@ -451,18 +451,16 @@ router.post('/purchaseorders', async (req, res) => {
     }
 })
 
-async function to_app_purchase_collection(data, res) {
+async function to_app_purchase_collection(username, data, res) {
     const purchaseEntry = new mongoModel.app_purchases({
         orderID: data.orderID,
-        username: data.name,
+        username: username,
         userID: data.userID,
         accountType: data.accountType,
         status: data.status,
         itemnumber: data.itemnumber,
         dateOrdered: data.dateOrdered,
         deliveryAddress: data.deliveryAddress,
-        date: data.date,
-        totalcost: data.totalcost,
         itemscost: data.itemscost,
         purchaseditems: data.purchaseditems,
     })
@@ -470,10 +468,10 @@ async function to_app_purchase_collection(data, res) {
         console.log('to_app_purchase_collection')
         if (err) {
             console.log(`to_app_purchase_collection error -- ${err}`)
-            return res.status(400).json({ message: err })
+            // return res.status(400).json({ message: err })
         } else {
             console.log('to_app_purchase_collection added')
-            return res.status(200).json({ message: "Added to app purchases collection" })
+            // return res.status(200).json({ message: "Added to app purchases collection" })
         }
     })
 }

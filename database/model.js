@@ -37,11 +37,7 @@ const purchase_data = mongoose.Schema({
     },
     date: {
         type: Date,
-        required: true,
-    },
-    totalcost: {
-        type: Number,
-        required: true,
+        default: Date.now,
     },
     itemscost: {
         type: Number,
