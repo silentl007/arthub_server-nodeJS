@@ -467,22 +467,29 @@ async function to_app_purchase_collection(data, res) {
         purchaseditems: data.purchaseditems,
     })
     purchaseEntry.save((err) => {
+        console.log('to_app_purchase_collection')
         if (err) {
+            console.log(`to_app_purchase_collection error -- ${err}`)
             return res.status(400).json({ message: err })
         } else {
+            console.log('to_app_purchase_collection added')
             return res.status(200).json({ message: "Added to app purchases collection" })
         }
     })
 }
 
 async function looperEmail(purchaseditems) {
+    console.log('looperEmail')
     for (var i = 0; i < purchaseditems.length; i++) {
+        console.log(`looperEmail iteration ${i}`)
         sendEmail.notifyArtist(purchaseditems[i].artistemail, purchaseditems[i].name, purchaseditems[i].product);
     }
 }
 
 async function move_to_soldworks(purchaseditems) {
+    console.log('move_to_soldworks')
     for (var i = 0; i < purchaseditems.length; i++) {
+        console.log(`move_to_soldworks iteration ${i}`)
         if (purchaseditems[i].accountType == 'Gallery') {
             try {
                 const delete_works = await mongoModel.gallery.updateOne({ email: purchaseditems[i].artistemail },

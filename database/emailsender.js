@@ -76,6 +76,11 @@ class EmailSender {
                 intro: 'Thank you for shopping at ArtHub!.',
                 action: {
                     instructions: `Your purchase has been confirmed with order ID - ${orderID}. It will be required before items are released! `,
+                    button: {
+                        color: '#22BC66',
+                        text: 'Thank You',
+                        link: `http://google.com`
+                    }
                 },
                 outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
             }
@@ -119,6 +124,11 @@ class EmailSender {
                 intro: 'Congrats! A customer has purchased your item.',
                 action: {
                     instructions: `Your artwork ${artwork} has been purchased. Please deliver to the respective location within the next three (3) working days! `,
+                    button: {
+                        color: '#22BC66',
+                        text: 'Deliver',
+                        link: `http://google.com`
+                    }
                 },
                 outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
             }
