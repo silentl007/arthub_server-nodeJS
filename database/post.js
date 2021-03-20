@@ -406,7 +406,7 @@ router.post('/purchaseorders', async (req, res) => {
         purchaseditems: purchaseditems,
     }
     // add body to purchases collection in the db
-    to_app_purchase_collection(body)
+    to_app_purchase_collection(body, res)
     if (accountType == 'Gallery') {
         const resetcart = [];
         try {
@@ -451,7 +451,7 @@ router.post('/purchaseorders', async (req, res) => {
     }
 })
 
-async function to_app_purchase_collection(data) {
+async function to_app_purchase_collection(data, res) {
     const purchaseEntry = new mongoModel.app_purchases({
         orderID: data.orderID,
         username: data.name,
@@ -506,125 +506,4 @@ async function move_to_soldworks(purchaseditems) {
         }
     }
 }
-
-// function sendMail(userName, userEmail, emailURL, res) {
-//     // for the email body, you can cc, bcc other email addresses and add attachments
-//     // check video 'Send email with Nodemailer using gmail account - Nodejs' for details
-//     // used mail generator for the template
-
-//     // generator for the theme, product name and link
-//     const mailgenerator = new mailgen({
-//         theme: 'default',
-//         product: {
-//             name: 'ArtHub',
-//             link: 'https://mailgen.js/'
-//         }
-//     });
-
-//     // creating the content of the email
-//     let emailContent = {
-//         body: {
-//             name: `${userName}`,
-//             intro: 'Welcome to ArtHub! We\'re very excited to have you on board.',
-//             action: {
-//                 instructions: 'To get started with ArtHub, please click the link below. The link will expire in five (5) minutes',
-//                 button: {
-//                     color: '#22BC66',
-//                     text: 'Activate your account',
-//                     link: `${emailURL}`
-//                 }
-//             },
-//             outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
-//         }
-//     }
-
-//     // transforming the content to HTML
-//     var generateEmailHTML = mailgenerator.generate(emailContent);
-
-//     // creating the email body used by nodemailer
-//     let emailBody = {
-//         from: process.env.ArtEmail,
-//         to: userEmail,
-//         subject: `Account activation link`,
-//         html: `${generateEmailHTML}
-//                 `
-//     }
-//     let transporter = nodemailer.createTransport({
-//         service: 'gmail',
-//         auth: {
-//             user: process.env.ArtEmail,
-//             pass: process.env.ArtPassword,
-//         }
-//     })
-//     transporter.sendMail(emailBody, async (err, data) => {
-//         if (err) {
-//             console.log(err);
-//             return res.status(400).json({ message: 'Email was not sent! Check console' });
-//         } else {
-//             console.log('Success!', data)
-//             return res.status(200).json({ message: 'Email has been sent!' });
-//         }
-//     })
-// }
-
-// function sendMailuserPurchase(userName, userEmail, emailURL, res) {
-//     // for the email body, you can cc, bcc other email addresses and add attachments
-//     // check video 'Send email with Nodemailer using gmail account - Nodejs' for details
-//     // used mail generator for the template
-
-//     // generator for the theme, product name and link
-//     const mailgenerator = new mailgen({
-//         theme: 'default',
-//         product: {
-//             name: 'ArtHub',
-//             link: 'https://mailgen.js/'
-//         }
-//     });
-
-//     // creating the content of the email
-//     let emailContent = {
-//         body: {
-//             name: `${userName}`,
-//             intro: 'Welcome to ArtHub! We\'re very excited to have you on board.',
-//             action: {
-//                 instructions: 'To get started with ArtHub, please click the link below. The link will expire in five (5) minutes',
-//                 button: {
-//                     color: '#22BC66',
-//                     text: 'Activate your account',
-//                     link: `${emailURL}`
-//                 }
-//             },
-//             outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
-//         }
-//     }
-
-//     // transforming the content to HTML
-//     var generateEmailHTML = mailgenerator.generate(emailContent);
-
-//     // creating the email body used by nodemailer
-//     let emailBody = {
-//         from: process.env.ArtEmail,
-//         to: userEmail,
-//         subject: `Account activation link`,
-//         html: `${generateEmailHTML}
-//                 `
-//     }
-//     let transporter = nodemailer.createTransport({
-//         service: 'gmail',
-//         auth: {
-//             user: process.env.ArtEmail,
-//             pass: process.env.ArtPassword,
-//         }
-//     })
-//     transporter.sendMail(emailBody, async (err, data) => {
-//         if (err) {
-//             console.log(err);
-//             return res.status(400).json({ message: 'Email was not sent! Check console' });
-//         } else {
-//             console.log('Success!', data)
-//             return res.status(200).json({ message: 'Email has been sent!' });
-//         }
-//     })
-// }
-
 module.exports = router
