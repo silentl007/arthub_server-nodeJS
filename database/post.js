@@ -7,7 +7,9 @@ const router = express.Router();
 const mongoModel = require('./model')
 const mailgen = require('mailgen');
 const dateFormat = require('dateformat');
+const EmailSender = require('./emailsender')
 var now = new Date();
+const sendEmail = new EmailSender();
 
 /** response codes
  * 200 -successful - general successful
@@ -32,7 +34,8 @@ router.post('/register', async (req, res) => {
         // Sends email
         const token = jwt.sign(dataBody, process.env.TokenSecret, { expiresIn: '5m' });
         var emailURL = `${process.env.URL}/apiS/activate/${token}`;
-        sendMail(dataBody.name, dataBody.email, emailURL, res);
+        sendEmail.registerMail(dataBody.name, dataBody.email, emailURL, res);
+        // sendMail(dataBody.name, dataBody.email, emailURL, res);
     }
 })
 
@@ -305,6 +308,7 @@ router.post('/cartadd/:userID/:accountType', async (req, res) => {
 
 })
 
+// check availability of cart items
 router.post('/checkcart', async (req, res) => {
     var result;
     var unavailable;
@@ -341,7 +345,7 @@ router.post('/checkcart', async (req, res) => {
     if (result == 'break') {
         console.log('loop was broken')
         return res.status(404).json({ itemname: unavailable })
-    }  return res.status(200).json({ itemname: 'success' })
+    } return res.status(200).json({ itemname: 'success' })
 })
 
 async function looper(accountType, artistemail, res) {
@@ -376,7 +380,10 @@ async function looper(accountType, artistemail, res) {
     }
 }
 
+
 router.post('/purchaseorders', async (req, res) => {
+    const useremail = req.body.email
+    const username = req.body.name
     const purchaseditems = req.body.purchaseditems;
     const userID = req.body.userID;
     const accountType = req.body.accountType
@@ -384,8 +391,9 @@ router.post('/purchaseorders', async (req, res) => {
     const totalcost = req.body.totalcost
     const itemnumber = req.body.itemnumber
     const deliveryAddress = req.body.deliveryAddress
+    const orderID = id_generator.v4()
     const body = {
-        orderID: id_generator.v4(),
+        orderID: orderID,
         userID: userID,
         accountType: accountType,
         status: "Pending",
@@ -397,11 +405,19 @@ router.post('/purchaseorders', async (req, res) => {
         itemscost: itemscost,
         purchaseditems: purchaseditems,
     }
+    // add body to purchases collection in the db
+    to_app_purchase_collection(body)
     if (accountType == 'Gallery') {
         const resetcart = [];
         try {
-            const reset = await mongoModel.gallery.findOneAndReplace({ userID: userID }, { cart: resetcart });
-            const query = await mongoModel.gallery.updateOne({ userID: userID }, { $push: { orders: body } });
+            const reset_cart = await mongoModel.gallery.updateOne({ userID: userID }, { $set: { cart: resetcart } });
+            const orders_add = await mongoModel.gallery.updateOne({ userID: userID }, { $push: { orders: body } });
+            // send mail to purchaser
+            sendEmail.purchaseUser(username, useremail, orderID, res)
+            // loop to send emails to artists to deliver, use a function, pass purchaseditems
+            looperEmail(purchaseditems);
+            // loop to remove from artists uploaded works to sold works, delete, push
+            move_to_soldworks(purchaseditems);
             return res.status(200)
         } catch (error) {
             console.log(error);
@@ -410,7 +426,11 @@ router.post('/purchaseorders', async (req, res) => {
 
     } else if (accountType == 'Freelancer') {
         try {
-            const query = await mongoModel.freelancer.updateOne({ userID: userID }, { $push: { orders: body } });
+            const reset_cart = await mongoModel.freelancer.updateOne({ userID: userID }, { $set: { cart: resetcart } });
+            const orders_add = await mongoModel.freelancer.updateOne({ userID: userID }, { $push: { orders: body } });
+            sendEmail.purchaseUser(username, useremail, orderID, res);
+            looperEmail(purchaseditems);
+            move_to_soldworks(purchaseditems);
             return res.status(200)
         } catch (error) {
             console.log(error);
@@ -418,7 +438,11 @@ router.post('/purchaseorders', async (req, res) => {
         }
     } else {
         try {
-            const query = await mongoModel.customer.updateOne({ userID: userID }, { $push: { orders: body } });
+            const reset_cart = await mongoModel.customer.updateOne({ userID: userID }, { $set: { cart: resetcart } });
+            const orders_add = await mongoModel.customer.updateOne({ userID: userID }, { $push: { orders: body } });
+            sendEmail.purchaseUser(username, useremail, orderID, res)
+            looperEmail(purchaseditems);
+            move_to_soldworks(purchaseditems);
             return res.status(200)
         } catch (error) {
             console.log(error);
@@ -427,64 +451,180 @@ router.post('/purchaseorders', async (req, res) => {
     }
 })
 
-function sendMail(userName, userEmail, emailURL, res) {
-    // for the email body, you can cc, bcc other email addresses and add attachments
-    // check video 'Send email with Nodemailer using gmail account - Nodejs' for details
-    // used mail generator for the template
-
-    // generator for the theme, product name and link
-    const mailgenerator = new mailgen({
-        theme: 'default',
-        product: {
-            name: 'ArtHub',
-            link: 'https://mailgen.js/'
-        }
-    });
-
-    // creating the content of the email
-    let emailContent = {
-        body: {
-            name: `${userName}`,
-            intro: 'Welcome to ArtHub! We\'re very excited to have you on board.',
-            action: {
-                instructions: 'To get started with ArtHub, please click the link below. The link will expire in five (5) minutes',
-                button: {
-                    color: '#22BC66',
-                    text: 'Activate your account',
-                    link: `${emailURL}`
-                }
-            },
-            outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
-        }
-    }
-
-    // transforming the content to HTML
-    var generateEmailHTML = mailgenerator.generate(emailContent);
-
-    // creating the email body used by nodemailer
-    let emailBody = {
-        from: process.env.ArtEmail,
-        to: userEmail,
-        subject: `Account activation link`,
-        html: `${generateEmailHTML}
-                `
-    }
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.ArtEmail,
-            pass: process.env.ArtPassword,
-        }
+async function to_app_purchase_collection(data) {
+    const purchaseEntry = new mongoModel.app_purchases({
+        orderID: data.orderID,
+        username: data.name,
+        userID: data.userID,
+        accountType: data.accountType,
+        status: data.status,
+        itemnumber: data.itemnumber,
+        dateOrdered: data.dateOrdered,
+        deliveryAddress: data.deliveryAddress,
+        date: data.date,
+        totalcost: data.totalcost,
+        itemscost: data.itemscost,
+        purchaseditems: data.purchaseditems,
     })
-    transporter.sendMail(emailBody, async (err, data) => {
+    purchaseEntry.save((err) => {
         if (err) {
-            console.log(err);
-            return res.status(400).json({ message: 'Email was not sent! Check console' });
+            return res.status(400).json({ message: err })
         } else {
-            console.log('Success!', data)
-            return res.status(200).json({ message: 'Email has been sent!' });
+            return res.status(200).json({ message: "Added to app purchases collection" })
         }
     })
 }
+
+async function looperEmail(purchaseditems) {
+    for (var i = 0; i < purchaseditems.length; i++) {
+        sendEmail.notifyArtist(purchaseditems[i].artistemail, purchaseditems[i].name, purchaseditems[i].product);
+    }
+}
+
+async function move_to_soldworks(purchaseditems) {
+    for (var i = 0; i < purchaseditems.length; i++) {
+        if (purchaseditems[i].accountType == 'Gallery') {
+            try {
+                const delete_works = await mongoModel.gallery.updateOne({ email: purchaseditems[i].artistemail },
+                    { $pull: { works: { productID: purchaseditems[i].productID } } });
+                const add_soldworks = await mongoModel.gallery.updateOne({ email: purchaseditems[i].artistemail },
+                    { $push: { soldworks: purchaseditems[i] } });
+            } catch (error) {
+                console.log(`the error at move_to_soldworks - ${error}`)
+            }
+
+        }
+        else {
+            try {
+                const delete_works = await mongoModel.freelancer.updateOne({ email: purchaseditems[i].artistemail },
+                    { $pull: { works: { productID: purchaseditems[i].productID } } });
+                const add_soldworks = await mongoModel.freelancer.updateOne({ email: purchaseditems[i].artistemail },
+                    { $push: { soldworks: purchaseditems[i] } });
+            } catch (error) {
+                console.log(`the error at move_to_soldworks - ${error}`)
+            }
+        }
+    }
+}
+
+// function sendMail(userName, userEmail, emailURL, res) {
+//     // for the email body, you can cc, bcc other email addresses and add attachments
+//     // check video 'Send email with Nodemailer using gmail account - Nodejs' for details
+//     // used mail generator for the template
+
+//     // generator for the theme, product name and link
+//     const mailgenerator = new mailgen({
+//         theme: 'default',
+//         product: {
+//             name: 'ArtHub',
+//             link: 'https://mailgen.js/'
+//         }
+//     });
+
+//     // creating the content of the email
+//     let emailContent = {
+//         body: {
+//             name: `${userName}`,
+//             intro: 'Welcome to ArtHub! We\'re very excited to have you on board.',
+//             action: {
+//                 instructions: 'To get started with ArtHub, please click the link below. The link will expire in five (5) minutes',
+//                 button: {
+//                     color: '#22BC66',
+//                     text: 'Activate your account',
+//                     link: `${emailURL}`
+//                 }
+//             },
+//             outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
+//         }
+//     }
+
+//     // transforming the content to HTML
+//     var generateEmailHTML = mailgenerator.generate(emailContent);
+
+//     // creating the email body used by nodemailer
+//     let emailBody = {
+//         from: process.env.ArtEmail,
+//         to: userEmail,
+//         subject: `Account activation link`,
+//         html: `${generateEmailHTML}
+//                 `
+//     }
+//     let transporter = nodemailer.createTransport({
+//         service: 'gmail',
+//         auth: {
+//             user: process.env.ArtEmail,
+//             pass: process.env.ArtPassword,
+//         }
+//     })
+//     transporter.sendMail(emailBody, async (err, data) => {
+//         if (err) {
+//             console.log(err);
+//             return res.status(400).json({ message: 'Email was not sent! Check console' });
+//         } else {
+//             console.log('Success!', data)
+//             return res.status(200).json({ message: 'Email has been sent!' });
+//         }
+//     })
+// }
+
+// function sendMailuserPurchase(userName, userEmail, emailURL, res) {
+//     // for the email body, you can cc, bcc other email addresses and add attachments
+//     // check video 'Send email with Nodemailer using gmail account - Nodejs' for details
+//     // used mail generator for the template
+
+//     // generator for the theme, product name and link
+//     const mailgenerator = new mailgen({
+//         theme: 'default',
+//         product: {
+//             name: 'ArtHub',
+//             link: 'https://mailgen.js/'
+//         }
+//     });
+
+//     // creating the content of the email
+//     let emailContent = {
+//         body: {
+//             name: `${userName}`,
+//             intro: 'Welcome to ArtHub! We\'re very excited to have you on board.',
+//             action: {
+//                 instructions: 'To get started with ArtHub, please click the link below. The link will expire in five (5) minutes',
+//                 button: {
+//                     color: '#22BC66',
+//                     text: 'Activate your account',
+//                     link: `${emailURL}`
+//                 }
+//             },
+//             outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
+//         }
+//     }
+
+//     // transforming the content to HTML
+//     var generateEmailHTML = mailgenerator.generate(emailContent);
+
+//     // creating the email body used by nodemailer
+//     let emailBody = {
+//         from: process.env.ArtEmail,
+//         to: userEmail,
+//         subject: `Account activation link`,
+//         html: `${generateEmailHTML}
+//                 `
+//     }
+//     let transporter = nodemailer.createTransport({
+//         service: 'gmail',
+//         auth: {
+//             user: process.env.ArtEmail,
+//             pass: process.env.ArtPassword,
+//         }
+//     })
+//     transporter.sendMail(emailBody, async (err, data) => {
+//         if (err) {
+//             console.log(err);
+//             return res.status(400).json({ message: 'Email was not sent! Check console' });
+//         } else {
+//             console.log('Success!', data)
+//             return res.status(200).json({ message: 'Email has been sent!' });
+//         }
+//     })
+// }
 
 module.exports = router

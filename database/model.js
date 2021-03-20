@@ -2,6 +2,57 @@ const mongoose = require('mongoose');
 const dateFormat = require('dateformat');
 var now = new Date()
 
+const purchase_data = mongoose.Schema({
+    orderID: {
+        type: String,
+        required: true,
+    },
+    username: {
+        type: String,
+        required: true,
+    },
+    userID: {
+        type: String,
+        required: true,
+    },
+    accountType: {
+        type: String,
+        required: true,
+    },
+    status: {
+        type: String,
+        required: true,
+    },
+    itemnumber: {
+        type: Number,
+        required: true,
+    },
+    dateOrdered: {
+        type: String,
+        required: true,
+    },
+    deliveryAddress: {
+        type: String,
+        required: true,
+    },
+    date: {
+        type: Date,
+        required: true,
+    },
+    totalcost: {
+        type: Number,
+        required: true,
+    },
+    itemscost: {
+        type: Number,
+        required: true,
+    },
+    purchaseditems: {
+        type: Array,
+        required: true,
+    },
+})
+
 const user_register = mongoose.Schema({
     userID: {
         type: String,
@@ -74,4 +125,5 @@ const user_register = mongoose.Schema({
 module.exports.gallery = mongoose.model('gallery_users', user_register);
 module.exports.freelancer = mongoose.model('freelance_users', user_register);
 module.exports.customer = mongoose.model('customer_users', user_register);
+module.exports.app_purchases = mongoose.model('delivery_purchases', purchase_data);
 module.exports.test = mongoose.model('test_db', user_register);

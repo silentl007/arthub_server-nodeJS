@@ -6,6 +6,7 @@
  * EditProfile - implemented
  * UploadWork - implemented
  * AddCart - implemented
+ * CheckCartItems - implemented
  * Order Add (data to send at checkout)
  * Galleries - implemented
  * Freelancers - implemented
