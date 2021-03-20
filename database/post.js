@@ -417,11 +417,12 @@ router.post('/purchaseorders', async (req, res) => {
             // loop to send emails to artists to deliver, use a function, pass purchaseditems
             looperEmail(purchaseditems);
             // loop to remove from artists uploaded works to sold works, delete, push
-            move_to_soldworks(purchaseditems);
-            return res.status(200)
+            move_to_soldworks(purchaseditems, res);
+            console.log('return - Gallery')
+            return res.status(200).json({ message: 'success' })
         } catch (error) {
             console.log(error);
-            return res.status(400)
+            return res.status(400).json({ message: 'failed' })
         }
 
     } else if (accountType == 'Freelancer') {
@@ -430,11 +431,12 @@ router.post('/purchaseorders', async (req, res) => {
             const orders_add = await mongoModel.freelancer.updateOne({ userID: userID }, { $push: { orders: body } });
             sendEmail.purchaseUser(username, useremail, orderID, res);
             looperEmail(purchaseditems);
-            move_to_soldworks(purchaseditems);
-            return res.status(200)
+            move_to_soldworks(purchaseditems, res);
+            console.log('return - Freelancer')
+            return res.status(200).json({ message: 'success' })
         } catch (error) {
             console.log(error);
-            return res.status(400)
+            return res.status(400).json({ message: 'failed' })
         }
     } else {
         try {
@@ -442,11 +444,12 @@ router.post('/purchaseorders', async (req, res) => {
             const orders_add = await mongoModel.customer.updateOne({ userID: userID }, { $push: { orders: body } });
             sendEmail.purchaseUser(username, useremail, orderID, res)
             looperEmail(purchaseditems);
-            move_to_soldworks(purchaseditems);
-            return res.status(200)
+            move_to_soldworks(purchaseditems, res);
+            console.log('return - Customer')
+            return res.status(200).json({ message: 'success' })
         } catch (error) {
             console.log(error);
-            return res.status(400)
+            return res.status(400).json({ message: 'failed' })
         }
     }
 })
@@ -482,6 +485,8 @@ async function looperEmail(purchaseditems) {
         console.log(`looperEmail iteration ${i}`)
         sendEmail.notifyArtist(purchaseditems[i].artistemail, purchaseditems[i].name, purchaseditems[i].product);
     }
+    console.log('end of looperEmail');
+    // console.log('return - Gallery')
 }
 
 async function move_to_soldworks(purchaseditems) {
@@ -509,6 +514,7 @@ async function move_to_soldworks(purchaseditems) {
                 console.log(`the error at move_to_soldworks - ${error}`)
             }
         }
-    }
+    } console.log('end of move_to_soldworks');
+    return res.status(200).json({message: 'success'})
 }
 module.exports = router
