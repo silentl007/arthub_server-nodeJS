@@ -515,6 +515,6 @@ async function move_to_soldworks(purchaseditems) {
             }
         }
     } console.log('end of move_to_soldworks');
-    return res.status(200).json({message: 'success'})
+    // return res.status(200).json({message: 'success'})
 }
 module.exports = router
