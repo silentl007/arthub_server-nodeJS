@@ -7,16 +7,17 @@
  * UploadWork - implemented
  * AddCart - implemented
  * CheckCartItems - implemented
- * Order Add (data to send at checkout)
+ * Purchase orders - - implemented
+ * Order Add (data to send at checkout) - implemented
  * Galleries - implemented
  * Freelancers - implemented
- * SoldWorks
+ * SoldWorks - implemented
  * UploadedWorks - implemented
  * Orders (get orders pending or delivered)
  * CartItems - implemented
  * CartItemRemove - implemented
  * UploadedItemRemove - implemented
- * Password Reset
+ * Password Reset - implemented
  */
 
 // POST requests
