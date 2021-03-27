@@ -529,7 +529,7 @@ router.post('/updatedelivery', async (req, res) => {
         try {
             const updateDelivery = await mongoModel.gallery.updateOne({ userID: userID, 'orders.orderID': orderID },
                 {
-                    $set: { 'orders.status': 'Delivered' }
+                    $set: { 'orders.$.status': 'Delivered' }
                 })
             return res.status(200).json(updateDelivery);
         } catch (err) {
@@ -541,7 +541,7 @@ router.post('/updatedelivery', async (req, res) => {
         try {
             const updateDelivery = await mongoModel.freelancer.updateOne({ userID: userID, 'orders.orderID': orderID },
                 {
-                    $set: { 'orders.status': 'Delivered' }
+                    $set: { 'orders.$.status': 'Delivered' }
                 })
             return res.status(200).json(updateDelivery);
         } catch (err) {
@@ -553,7 +553,7 @@ router.post('/updatedelivery', async (req, res) => {
         try {
             const updateDelivery = await mongoModel.customer.updateOne({ userID: userID, 'orders.orderID': orderID },
                 {
-                    $set: { 'orders.status': 'Delivered' }
+                    $set: { 'orders.$.status': 'Delivered' }
                 })
             return res.status(200).json(updateDelivery);
         } catch (err) {
