@@ -44,12 +44,7 @@ const purchase_data = mongoose.Schema({
         type: Date,
         default: Date.now,
     },
-    clearAgent: {
-        type: String,
-        required: false,
-        default: ''
-    },
-    clearAgentEmail: {
+    clearAgentID: {
         type: String,
         required: false,
         default: ''

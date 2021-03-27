@@ -523,7 +523,8 @@ router.post('/updatedelivery', async (req, res) => {
     const userID = req.body.userID;
     const accountType = req.body.accountType;
     const orderID = req.body.orderID;
-    updateDeliveryOther(orderID, req.body);
+    const clearAgentID = req.body.clearAgentID;
+    updateDeliveryOther(orderID, clearAgentID);
     if (accountType == 'Gallery') {
         try {
             const updateDelivery = await mongoModel.gallery.updateOne({ userID: userID, 'orders.orderID': orderID },
@@ -560,13 +561,11 @@ router.post('/updatedelivery', async (req, res) => {
     }
 })
 
-async function updateDeliveryOther(orderID, body) {
-    const clearAgent = body.clearAgent;
-    const clearAgentEmail = body.clearAgentEmail;
+async function updateDeliveryOther(orderID, clearAgentID) {
     try {
         const update = await mongoModel.app_purchases.updateOne({ orderID: orderID },
-            { $set: { status: 'Delivered', dateDelivered: dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT"), clearAgent: clearAgent, clearAgentEmail: clearAgentEmail } })
-            console.log('completed update')
+            { $set: { status: 'Delivered', dateDelivered: dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT"), clearAgentID: clearAgentID } })
+        console.log('completed update')
     } catch (error) {
         console.log(`error at updateDeliveryOther - ${error}`)
     }
