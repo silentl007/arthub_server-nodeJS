@@ -31,6 +31,11 @@ const purchase_data = mongoose.Schema({
         type: String,
         required: true,
     },
+    dateDelivered: {
+        type: String,
+        required: false,
+        default: ''
+    },
     deliveryAddress: {
         type: String,
         required: true,
@@ -38,6 +43,16 @@ const purchase_data = mongoose.Schema({
     date: {
         type: Date,
         default: Date.now,
+    },
+    clearAgent: {
+        type: String,
+        required: false,
+        default: ''
+    },
+    clearAgentEmail: {
+        type: String,
+        required: false,
+        default: ''
     },
     itemscost: {
         type: Number,

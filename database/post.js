@@ -517,4 +517,48 @@ async function move_to_soldworks(purchaseditems) {
     } console.log('end of move_to_soldworks');
     // return res.status(200).json({message: 'success'})
 }
+
+// update purchase delivery status
+router.post('/updatedelivery', async (req, res) => {
+    const userID = req.body.userID;
+    const accountType = req.body.accountType;
+    const orderID = req.body.orderID;
+    updateDeliveryOther(orderID);
+    if (accountType == 'Gallery') {
+        try {
+            const updateDelivery = await mongoModel.gallery.updateOne({ userID: userID, 'orders.orderID': orderID },
+                {
+                    $set: { 'orders.status': 'Delivered' }
+                })
+            return res.status(200).json(updateDelivery);
+        } catch (err) {
+            console.log(err);
+            return res.status(400);
+        }
+    } else if (accountType == 'Freelancer') {
+        try {
+            const updateDelivery = await mongoModel.freelancer.updateOne({ userID: userID, 'orders.orderID': orderID },
+                {
+                    $set: { 'orders.status': 'Delivered' }
+                })
+            return res.status(200).json(updateDelivery);
+        } catch (err) {
+            console.log(err);
+            return res.status(400);
+        }
+    } else {
+        try {
+            const updateDelivery = await mongoModel.customer.updateOne({ userID: userID, 'orders.orderID': orderID },
+                {
+                    $set: { 'orders.status': 'Delivered' }
+                })
+            return res.status(200).json(updateDelivery);
+        } catch (err) {
+            console.log(err);
+            return res.status(400);
+        }
+    }
+})
+
+async function  updateDeliveryOther  (orderID) {}
 module.exports = router
