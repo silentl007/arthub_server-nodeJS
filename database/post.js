@@ -524,53 +524,55 @@ router.post('/updatedelivery', async (req, res) => {
     const accountType = req.body.accountType;
     const orderID = req.body.orderID;
     const clearAgentID = req.body.clearAgentID;
-    updateDeliveryOther(orderID, clearAgentID);
-    if (accountType == 'Gallery') {
-        try {
-            const updateDelivery = await mongoModel.gallery.updateOne({ userID: userID, 'orders.orderID': orderID },
-                {
-                    $set: { 'orders.$.status': 'Delivered' }
-                })
-            return res.status(200).json(updateDelivery);
-        } catch (err) {
-            console.log(err);
-            console.log('here at gallery')
-            return res.status(400);
-        }
-    } else if (accountType == 'Freelancer') {
-        try {
-            const updateDelivery = await mongoModel.freelancer.updateOne({ userID: userID, 'orders.orderID': orderID },
-                {
-                    $set: { 'orders.$.status': 'Delivered' }
-                })
-            return res.status(200).json(updateDelivery);
-        } catch (err) {
-            console.log(err);
-            console.log('here at freelancer')
-            return res.status(400);
-        }
-    } else {
-        try {
-            const updateDelivery = await mongoModel.customer.updateOne({ userID: userID, 'orders.orderID': orderID },
-                {
-                    $set: { 'orders.$.status': 'Delivered' }
-                })
-            return res.status(200).json(updateDelivery);
-        } catch (err) {
-            console.log(err);
-            console.log('here at customer')
-            return res.status(400);
-        }
-    }
+    updateDeliveryOther(orderID, clearAgentID, res);
+    // if (accountType == 'Gallery') {
+    //     try {
+    //         const updateDelivery = await mongoModel.gallery.updateOne({ userID: userID, 'orders.orderID': orderID },
+    //             {
+    //                 $set: { 'orders.$.status': 'Delivered' }
+    //             })
+    //         return res.status(200).json(updateDelivery);
+    //     } catch (err) {
+    //         console.log(err);
+    //         console.log('here at gallery')
+    //         return res.status(400);
+    //     }
+    // } else if (accountType == 'Freelancer') {
+    //     try {
+    //         const updateDelivery = await mongoModel.freelancer.updateOne({ userID: userID, 'orders.orderID': orderID },
+    //             {
+    //                 $set: { 'orders.$.status': 'Delivered' }
+    //             })
+    //         return res.status(200).json(updateDelivery);
+    //     } catch (err) {
+    //         console.log(err);
+    //         console.log('here at freelancer')
+    //         return res.status(400);
+    //     }
+    // } else {
+    //     try {
+    //         const updateDelivery = await mongoModel.customer.updateOne({ userID: userID, 'orders.orderID': orderID },
+    //             {
+    //                 $set: { 'orders.$.status': 'Delivered' }
+    //             })
+    //         return res.status(200).json(updateDelivery);
+    //     } catch (err) {
+    //         console.log(err);
+    //         console.log('here at customer')
+    //         return res.status(400);
+    //     }
+    // }
 })
 
-async function updateDeliveryOther(orderID, clearAgentID) {
+async function updateDeliveryOther(orderID, clearAgentID, res) {
     try {
         const update = await mongoModel.app_purchases.updateOne({ orderID: orderID },
-            { $set: { status: 'Delivered', dateDelivered: dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT"), clearAgentID: clearAgentID } })
+            { $set: { status: 'Delivered', } })
         console.log('completed update')
+        return res.status(200).json(update)
     } catch (error) {
         console.log(`error at updateDeliveryOther - ${error}`)
+        return res.status(404)
     }
 }
 module.exports = router
