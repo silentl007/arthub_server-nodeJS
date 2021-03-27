@@ -534,6 +534,7 @@ router.post('/updatedelivery', async (req, res) => {
             return res.status(200).json(updateDelivery);
         } catch (err) {
             console.log(err);
+            console.log('here at gallery')
             return res.status(400);
         }
     } else if (accountType == 'Freelancer') {
@@ -545,6 +546,7 @@ router.post('/updatedelivery', async (req, res) => {
             return res.status(200).json(updateDelivery);
         } catch (err) {
             console.log(err);
+            console.log('here at freelancer')
             return res.status(400);
         }
     } else {
@@ -556,6 +558,7 @@ router.post('/updatedelivery', async (req, res) => {
             return res.status(200).json(updateDelivery);
         } catch (err) {
             console.log(err);
+            console.log('here at customer')
             return res.status(400);
         }
     }
