@@ -142,7 +142,7 @@ router.get('/orders/:userID/:accountType', async (req, res) => {
 router.get('/cartget/:userID/:accountType', async (req, res) => {
     const userID = req.params.userID;
     const accountType = req.params.accountType;
-    if (accountType == 'Gallery') { 
+    if (accountType == 'Gallery') {
         try {
             const query = await mongoModel.gallery.findOne({ userID: userID });
             return res.status(200).send(query.cart);
@@ -175,5 +175,12 @@ router.get('/cartget/:userID/:accountType', async (req, res) => {
 })
 
 // get order details 
-
+router.get('/orderdetails/:orderID', async (req, res) => {
+    try {
+        const query = await mongoModel.app_purchases.findOne({ orderID: req.params.orderID });
+        return res.status(200).send(query);
+    } catch (error) {
+        console.log(`error at get order details - ${error}`)
+    }
+})
 module.exports = router;
