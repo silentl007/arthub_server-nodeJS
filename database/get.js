@@ -178,9 +178,18 @@ router.get('/cartget/:userID/:accountType', async (req, res) => {
 router.get('/orderdetails/:orderID', async (req, res) => {
     try {
         const query = await mongoModel.app_purchases.findOne({ orderID: req.params.orderID });
-        return res.status(200).send(query);
+        if (query != null) {
+            console.log('not null')
+            return res.status(200).send(query);
+        }
+        else {
+            console.log('null')
+            return res.status(404).send({});
+        }
+
     } catch (error) {
         console.log(`error at get order details - ${error}`)
+        return res.status(400)
     }
 })
 module.exports = router;
