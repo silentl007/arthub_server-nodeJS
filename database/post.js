@@ -407,7 +407,7 @@ router.post('/purchaseorders', async (req, res) => {
         purchaseditems: purchaseditems,
     }
     // add body to purchases collection in the db
-    to_app_purchase_collection(username, body, res)
+    to_app_purchase_collection(username, useremail, body, res)
     if (accountType == 'Gallery') {
         try {
             const reset_cart = await mongoModel.gallery.updateOne({ userID: userID }, { $set: { cart: resetcart } });
@@ -454,11 +454,12 @@ router.post('/purchaseorders', async (req, res) => {
     }
 })
 
-async function to_app_purchase_collection(username, data, res) {
+async function to_app_purchase_collection(username, useremail, data) {
     const purchaseEntry = new mongoModel.app_purchases({
         orderID: data.orderID,
         username: username,
         userID: data.userID,
+        useremail: useremail,
         accountType: data.accountType,
         status: data.status,
         itemnumber: data.itemnumber,
@@ -471,10 +472,8 @@ async function to_app_purchase_collection(username, data, res) {
         console.log('to_app_purchase_collection')
         if (err) {
             console.log(`to_app_purchase_collection error -- ${err}`)
-            // return res.status(400).json({ message: err })
         } else {
             console.log('to_app_purchase_collection added')
-            // return res.status(200).json({ message: "Added to app purchases collection" })
         }
     })
 }
@@ -486,7 +485,6 @@ async function looperEmail(purchaseditems) {
         sendEmail.notifyArtist(purchaseditems[i].artistemail, purchaseditems[i].name, purchaseditems[i].product);
     }
     console.log('end of looperEmail');
-    // console.log('return - Gallery')
 }
 
 async function move_to_soldworks(purchaseditems) {
@@ -515,7 +513,6 @@ async function move_to_soldworks(purchaseditems) {
             }
         }
     } console.log('end of move_to_soldworks');
-    // return res.status(200).json({message: 'success'})
 }
 
 // update purchase delivery status
@@ -524,7 +521,10 @@ router.post('/updatedelivery', async (req, res) => {
     const accountType = req.body.accountType;
     const orderID = req.body.orderID;
     const clearAgentID = req.body.clearAgentID;
-    updateDeliveryOther(orderID, clearAgentID, res);
+    const username = req.body.username;
+    const useremail = req.body.useremail;
+    updateDeliveryOther(orderID, clearAgentID);
+    sendEmail.orderDelivered(useremail, username, orderID,)
     if (accountType == 'Gallery') {
         try {
             const updateDelivery = await mongoModel.gallery.updateOne({ userID: userID, 'orders.orderID': orderID },
@@ -564,7 +564,7 @@ router.post('/updatedelivery', async (req, res) => {
     }
 })
 
-async function updateDeliveryOther(orderID, clearAgentID, res) {
+async function updateDeliveryOther(orderID, clearAgentID) {
     try {
         const update = await mongoModel.app_purchases.updateOne({ orderID: orderID },
             { $set: { status: 'Delivered', dateDelivered: dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT"), clearAgentID: clearAgentID } })
@@ -572,4 +572,5 @@ async function updateDeliveryOther(orderID, clearAgentID, res) {
         console.log(`error at updateDeliveryOther - ${error}`)
     }
 }
+
 module.exports = router

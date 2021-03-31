@@ -15,6 +15,10 @@ const purchase_data = mongoose.Schema({
         type: String,
         required: true,
     },
+    useremail: {
+        type: String,
+        required: true,
+    },
     accountType: {
         type: String,
         required: true,

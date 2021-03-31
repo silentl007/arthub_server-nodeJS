@@ -56,7 +56,7 @@ class EmailSender {
                 console.log(err);
                 return res.status(400).json({ message: 'Email was not sent! Check console' });
             } else {
-                console.log('Success!', data)
+                console.log('Success!')
                 return res.status(200).json({ message: 'Email has been sent!' });
             }
         })
@@ -102,10 +102,8 @@ class EmailSender {
         transporter.sendMail(emailBody, async (err, data) => {
             if (err) {
                 console.log(err);
-                // return res.status(400).json({ message: 'Email was not sent! Check console' });
             } else {
-                console.log('Success!', data)
-                // return res.status(200).json({ message: 'Email has been sent!' });
+                console.log('Success!')
             }
         })
     }
@@ -150,10 +148,54 @@ class EmailSender {
         transporter.sendMail(emailBody, async (err, data) => {
             if (err) {
                 console.log(err);
-                // return res.status(400).json({ message: 'Email was not sent! Check console' });
             } else {
-                console.log('Success!', data)
-                // return res.status(200).json({ message: 'Email has been sent!' });
+                console.log('Success!')
+            }
+        })
+    }
+
+    orderDelivered(useremail, username, orderID, res) {
+        const mailgenerator = new mailgen({
+            theme: 'default',
+            product: {
+                name: 'ArtHub',
+                link: 'https://mailgen.js/'
+            }
+        });
+        let emailContent = {
+            body: {
+                name: `${username}`,
+                intro: 'Thank you for shopping with us!',
+                action: {
+                    instructions: `Your order with ID - ${orderID} has been fulfilled! Thank you for shopping with Arthub! See you soon! `,
+                    button: {
+                        color: '#22BC66',
+                        text: 'Deliver',
+                        link: `http://google.com`
+                    }
+                },
+                outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
+            }
+        }
+        var generateEmailHTML = mailgenerator.generate(emailContent);
+        let emailBody = {
+            from: process.env.ArtEmail,
+            to: useremail,
+            subject: `Order Delivered`,
+            html: `${generateEmailHTML}              `
+        }
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.ArtEmail,
+                pass: process.env.ArtPassword,
+            }
+        })
+        transporter.sendMail(emailBody, async (err, data) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('Success!')
             }
         })
     }
